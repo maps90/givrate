@@ -97,4 +97,18 @@ class RatingsController extends GivrateAppController {
 		$this->Session->setFlash(__('Rating was not deleted'));
 		$this->redirect(array('action' => 'index'));
 	}
+
+	public function submit() {
+		if (isset($this->request->params['rate']) || isset($this->request->params['rating']) || isset($this->request->params['user']) || isset($this->request->params['alias'])) {
+			$rate = $this->request->params['rate'];
+			$rating = $this->request->params['rating'];
+			$userId = $this->request->params['user'];
+			$alias = $this->request->params['alias'];
+		}
+
+		$this->viewClass = 'Json';
+		$result = $this->Ratings->rate($rate, $rating, $userId, $alias, $redirect = false);
+		$this->set(compact('result'));
+		$this->set('_serialize', 'result');
+	}
 }

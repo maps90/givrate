@@ -45,8 +45,15 @@ class RatingsComponent extends Component {
 	/*
 	 * FIXME: rate processing into behavior but still not stable.
 	 */
-	public function rate($rate, $rating, $user, $redirect = false) {
+	public function rate($rate, $rating, $user, $alias = null, $redirect = false) {
+
+		if (!empty($alias)) {
+			$this->modelName = $alias;
+			$this->Controller->modelClass = $alias;
+		}
+
 		$Controller = $this->Controller;
+
 		$Controller->{$this->modelName}->id = $rate;
 		if ($Controller->{$this->modelName}->exists(null)) {
 			if ($Controller->{$this->modelName}->saveRating($rate, $user, $rating)) {
