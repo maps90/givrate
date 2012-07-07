@@ -80,4 +80,18 @@ class Rating extends GivrateAppModel {
 			'order' => ''
 		)
 	);
+
+	public function isRated($modelName, $foreignKey, $user, $options = array()) {
+		if ($options['recursive'] == true) {
+			$this->recursive = -1;
+		}
+		$result = $this->find('first', array(
+			'conditions' => array(
+				'Rating.model' => $modelName,
+				'Rating.foreign_key' => $foreignKey,
+				'Rating.user_id' => $user
+				)
+			));
+		return $result;
+	}
 }

@@ -62,7 +62,14 @@ class GivrateHelper extends AppHelper {
 			$type = 'ul';
 		}
 
-		$stars = $this->Html->tag($type, $stars, array('class' => $options['class'] . ' ' . 'givrate-' . round($options['value'], 0)));
+		$Rating = ClassRegistry::init('Givrate.Rating');
+		$isRated = $Rating->isRated($alias, $id, $userId, array('recursive' => true));
+
+		if (!empty($isRated)) {
+			$stars = 'Rated';
+		} else {
+			$stars = $this->Html->tag($type, $stars, array('class' => $options['class'] . ' ' . 'givrate-' . round($options['value'], 0)));
+		}
 
 		return $stars;
 	}
