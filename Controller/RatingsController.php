@@ -100,14 +100,32 @@ class RatingsController extends GivrateAppController {
 
 	public function submit() {
 		if (isset($this->request->params['rate']) || isset($this->request->params['rating']) || isset($this->request->params['user']) || isset($this->request->params['alias'])) {
-			$rate = $this->request->params['rate'];
-			$rating = $this->request->params['rating'];
 			$userId = $this->request->params['user'];
 			$alias = $this->request->params['alias'];
+			$foreignKey = $this->request->params['rate'];
+			$value = $this->request->params['rating'];
+		} else {
+			return false;
 		}
 
-		$this->viewClass = 'Json';
-		$result = $this->Ratings->rate($rate, $rating, $userId, $alias, $redirect = false);
+		$rated = $this->Rating->isRated($alias, $foreignKey, $userId, array('recursive' => true));
+		if ($rated) {
+			return false;
+		}
+
+		$data = array(
+			'user_id' => $this->request->params['user'],
+			'model' => $this->request->params['alias'],
+			'foreign_key' => $this->request->params['rate'],
+			'value' => $this->request->params['rating'],
+			);
+		$this->Rating->create();
+
+		if ($result = $this->Rating->save($data)) {
+			$result = 'successful';
+		} else {
+			$result = 'failed';
+		}
 		$this->set(compact('result'));
 		$this->set('_serialize', 'result');
 	}

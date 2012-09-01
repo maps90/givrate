@@ -82,7 +82,7 @@ class Rating extends GivrateAppModel {
 	);
 
 	public function isRated($modelName, $foreignKey, $user, $options = array()) {
-		if ($options['recursive'] == true) {
+		if (isset($options['recursive']) && ($options['recursive'] == true)) {
 			$this->recursive = -1;
 		}
 		$result = $this->find('first', array(
@@ -93,5 +93,21 @@ class Rating extends GivrateAppModel {
 				)
 			));
 		return $result;
+	}
+
+	public function _calculateRating($data) {
+		$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
+		if (!empty($data)) {
+			$alias = $data['Rating']['model'];
+			$foreignKey = $data['Rating']['foreign_key'];
+			$value = $data['Rating']['value'];
+			$RateCalculate->calculating($alias, $foreignKey, $value);
+		}
+	}
+
+	public function afterSave($created) {
+		if ($created) {
+			$this->_calculateRating($this->data);
+		}
 	}
 }

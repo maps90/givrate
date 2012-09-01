@@ -74,4 +74,50 @@ class RateCalculate extends GivrateAppModel {
 		),
 
 	);
+
+	public function calculating($alias, $foreignKey, $value) {
+		$rated = $this->find('first', array(
+			'recursive' => -1,
+			'conditions' => array(
+				'RateCalculate.model' => $alias,
+				'RateCalculate.foreign_key' => $foreignKey
+				)
+			));
+		$count = $this->_countRate($rated['RateCalculate']['count']);
+		$sum = $this->_sumRate($rated['RateCalculate']['sum'], $value);
+		$avg = $this->_avgRate($sum, $count);
+
+		$data['RateCalculate']['count'] = $count;
+		$data['RateCalculate']['sum'] = $sum;
+		$data['RateCalculate']['avg'] = $avg;
+
+		if (!empty($rated)) {
+			$this->id = $rated['RateCalculate']['id'];
+		} else {
+			$data['RateCalculate']['model'] = $alias;
+			$data['RateCalculate']['foreign_key'] = $foreignKey;
+			$this->create();
+		}
+
+		if ($this->save($data)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	public function _avgRate($value = null, $count = null) {
+		$avg = ($value / $count);
+		return $avg;
+	}
+
+	public function _countRate($count = null) {
+		$count = $count + 1;
+		return $count;
+	}
+
+	public function _sumRate($oldValue = null, $value = null) {
+		$sum = $oldValue + $value;
+		return $sum;
+	}
 }
