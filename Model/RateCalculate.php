@@ -75,6 +75,10 @@ class RateCalculate extends GivrateAppModel {
 
 	);
 
+	var $findMethods = array(
+		'bestRate' => true,
+		);
+
 	public function calculating($alias, $foreignKey, $value) {
 		$rated = $this->find('first', array(
 			'recursive' => -1,
@@ -119,5 +123,26 @@ class RateCalculate extends GivrateAppModel {
 	public function _sumRate($oldValue = null, $value = null) {
 		$sum = $oldValue + $value;
 		return $sum;
+	}
+
+	public function _findBestRate($state, $query, $results = array()) {
+		if ($state === 'before') {
+			$limit = isset($query['limit']) ? $query['limit'] : null;
+			$alias = isset($query['alias']) ? $query['alias'] : null;
+
+			if ($limit != null) {
+				$query['limit'] = $limit;
+			}
+			$query = Set::merge($query, array(
+				'conditions' => array(
+					'RateCalculate.model' => $alias,
+					),
+				'order' => 'RateCalculate.avg DESC',
+				'limit' => $limit,
+				));
+			return $query;
+		} else {
+			return $results;
+		}
 	}
 }
