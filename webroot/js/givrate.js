@@ -24,6 +24,9 @@ var Givrate = function() {
 		var alias = $('#rate-link'+el).attr('data-alias');
 		var url = Croogo.basePath + 'give-rate/' + alias + '/' + id + '/' + ratingId + '/' + userId + '/getdata.json';
 		$.getJSON(url, function(data) {
+			if (data == 'successful') {
+				$('div.rate').replaceWith('<span>Rated</span>');
+			}
 		});
 	}
 
