@@ -21,9 +21,6 @@ class RatingsComponent extends Component {
 			if (empty($this->modelName)) {
 				$this->modelName = $Controller->modelClass;
 			}
-			if (!$Controller->{$this->modelName}->Behaviors->attached('Giveme')) {
-				$Controller->{$this->modelName}->Behaviors->load('Givrate.Giveme', $this->settings);
-			}
 			$Controller->helpers[] = 'Givrate.Givrate';
 		}
 	}
