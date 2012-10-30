@@ -15,23 +15,21 @@ Givrate.namespace = function() {
 	}
 }
 
-var Givrate = function() {
+Givrate.namespace('Givrate.Ratings');
 
-	var startRate = function(el,rate) {
-		var id = $('#rate-link'+el).attr('data-rate');
-		var ratingId = rate;
-		var userId = $('#rate-link'+el).attr('data-id');
-		var alias = $('#rate-link'+el).attr('data-alias');
-		var url = Croogo.basePath + 'give-rate/' + alias + '/' + id + '/' + ratingId + '/' + userId + '/getdata.json';
-		$.getJSON(url, function(data) {
-			if (data == 'successful') {
-				$('div.rate').replaceWith('<span>Rated</span>');
-			}
-		});
-	}
-
-	return {
-		startRate : startRate,
-		init: function() { return this }
-	}
-}().init(this);
+Givrate.Ratings.star = function(ev) {
+	var rateId = $(ev.currentTarget).attr('data-rate_id').replace(/^s/, '');
+	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
+	var userId = $(ev.currentTarget).attr('data-user_id').replace(/^s/, '');
+	var alias = $(ev.currentTarget).attr('data-alias');
+	var url = Croogo.basePath + 'givrate/ratings/submit.json';
+	$.post(url, { rate_id: rateId, rating: rating, user_id: userId, alias: alias }, function(data) {
+		if (data == true) {
+			var replacing = '<span class="rated">Rated</span>';
+			$('ul.rating').fadeTo(400, 0, function() {
+				$(this).html(replacing).fadeTo(400, 1);
+			});
+		}
+	});
+	return false;
+}

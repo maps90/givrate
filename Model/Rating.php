@@ -105,6 +105,24 @@ class Rating extends GivrateAppModel {
 		}
 	}
 
+	public function rate($rateId, $rating, $userId, $alias) {
+		$rated = $this->isRated($alias, $rateId, $userId, array('recursive' => true));
+		if ($rated) {
+			return false;
+		}
+		$data = array(
+			'user_id' => $userId,
+			'model' => $alias,
+			'foreign_key' => $rateId,
+			'value' => $rating
+			);
+		if ($this->save($data)) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
 	public function afterSave($created) {
 		if ($created) {
 			$this->_calculateRating($this->data);

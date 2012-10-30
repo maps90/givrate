@@ -15,7 +15,8 @@ class GivrateHelper extends AppHelper {
 			return;
 		}
 		$this->Html->script(array(
-			'/givrate/js/givrate'), array('inline' => false));
+			'/givrate/js/givrate'), array('inline' => false
+		));
 	}
 
 	/*
@@ -46,15 +47,17 @@ class GivrateHelper extends AppHelper {
 		for ($i = 1; $i <= $options['stars']; $i++) {
 			$link = null;
 			$options = Set::merge($options, array(
-				'id' => 'rate-link'.$id,
+				'class' => 'rate-link'.$id,
 				'data-alias' => $alias,
-				'data-rate' => $id,
+				'data-rate_id' => $id,
 				'data-rating' => $i,
-				'data-id' => $userId,
-				'onclick' => "Givrate.startRate($id,$i);",
+				'data-user_id' => $userId,
 				));
 			$link = $this->Html->link($i, $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
+$script =<<<EOF
+$('body').on('click', '.rate-link$id', Givrate.Ratings.star);
+EOF;
 		}
 		if (in_array($options['type'], $this->allowedTypes)) {
 			$type = $options['type'];
@@ -62,15 +65,8 @@ class GivrateHelper extends AppHelper {
 			$type = 'ul';
 		}
 
-		$Rating = ClassRegistry::init('Givrate.Rating');
-		$isRated = $Rating->isRated($alias, $id, $userId, array('recursive' => true));
-
-		if (!empty($isRated)) {
-			$stars = 'Rated';
-		} else {
-			$stars = $this->Html->tag($type, $stars, array('class' => $options['class'] . ' ' . 'givrate-' . round($options['value'], 0)));
-		}
-
+		$stars = $this->Html->tag($type, $stars, array('class' => 'rating'));
+		$this->Js->buffer($script);
 		return $stars;
 	}
 

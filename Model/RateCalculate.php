@@ -87,9 +87,15 @@ class RateCalculate extends GivrateAppModel {
 				'RateCalculate.foreign_key' => $foreignKey
 				)
 			));
-		$count = $this->_countRate($rated['RateCalculate']['count']);
-		$sum = $this->_sumRate($rated['RateCalculate']['sum'], $value);
-		$avg = $this->_avgRate($sum, $count);
+		if (!empty($rated)) {
+			$count = $this->_countRate($rated['RateCalculate']['count']);
+			$sum = $this->_sumRate($rated['RateCalculate']['sum'], $value);
+			$avg = $this->_avgRate($sum, $count);
+		} else {
+			$count = $this->_countRate(0);
+			$sum = $this->_sumRate(0, $value);
+			$avg = $this->_avgRate($sum, $count);
+		}
 
 		$data['RateCalculate']['count'] = $count;
 		$data['RateCalculate']['sum'] = $sum;

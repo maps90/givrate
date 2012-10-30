@@ -7,6 +7,17 @@ App::uses('GivrateAppController', 'Givrate.Controller');
  */
 class RatingsController extends GivrateAppController {
 
+	public function beforeFilter() {
+		parent::beforeFilter();
+
+		switch ($this->request->params['action']) {
+			case 'submit':
+				$this->Security->csrfCheck = false;
+				$this->Security->validatePost = false;
+			break;
+		}
+	}
+
 
 /**
  * admin_index method
@@ -98,35 +109,38 @@ class RatingsController extends GivrateAppController {
 		$this->redirect(array('action' => 'index'));
 	}
 
+/**
+ * get related rating
+ */
+	public function related() {
+		$ralated = array();
+		if ($this->Auth->user('id') && !empty($this->request->query)) {
+			extract($this->request->query);
+			if (!empty($rate_id) && !empty($rating) && !empty($user_id) && !empty($alias)) {
+				$related = $this->Rating->related($rate_id, $rating, $user_id, $alias);
+			}
+		}
+		$this->set(compact('related'));
+	}
+
+/**
+ * submit add rating
+ */
 	public function submit() {
-		if (isset($this->request->params['rate']) || isset($this->request->params['rating']) || isset($this->request->params['user']) || isset($this->request->params['alias'])) {
-			$userId = $this->request->params['user'];
-			$alias = $this->request->params['alias'];
-			$foreignKey = $this->request->params['rate'];
-			$value = $this->request->params['rating'];
-		} else {
-			return false;
-		}
+		if ($this->request->is('post') || $this->request->is('put')) {
+			$rate_id = $this->request->data['rate_id'];
+			$rating = $this->request->data['rating'];
+			$user_id = $this->request->data['user_id'];
+			$alias = $this->request->data['alias'];
 
-		$rated = $this->Rating->isRated($alias, $foreignKey, $userId, array('recursive' => true));
-		if ($rated) {
-			return false;
+			$result = $this->Rating->rate($rate_id, $rating, $user_id, $alias);
+			if ($result) {
+				$response = true;
+			} else {
+				$response = false;
+			}
+			$this->set(compact('response'));
+			$this->set('_serialize', 'response');
 		}
-
-		$data = array(
-			'user_id' => $this->request->params['user'],
-			'model' => $this->request->params['alias'],
-			'foreign_key' => $this->request->params['rate'],
-			'value' => $this->request->params['rating'],
-			);
-		$this->Rating->create();
-
-		if ($result = $this->Rating->save($data)) {
-			$result = 'successful';
-		} else {
-			$result = 'failed';
-		}
-		$this->set(compact('result'));
-		$this->set('_serialize', 'result');
 	}
 }
