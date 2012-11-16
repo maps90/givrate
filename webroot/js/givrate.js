@@ -18,12 +18,11 @@ Givrate.namespace = function() {
 Givrate.namespace('Givrate.Ratings');
 
 Givrate.Ratings.star = function(ev) {
-	var rateId = $(ev.currentTarget).attr('data-rate_id').replace(/^s/, '');
 	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
 	var userId = $(ev.currentTarget).attr('data-user_id').replace(/^s/, '');
-	var alias = $(ev.currentTarget).attr('data-alias');
-	var url = Croogo.basePath + 'givrate/ratings/submit.json';
-	$.post(url, { rate_id: rateId, rating: rating, user_id: userId, alias: alias }, function(data) {
+	var token = $(ev.currentTarget).attr('data-token');
+	var url = Croogo.basePath + 'rate/submit.json';
+	$.post(url, { rating: rating, user_id: userId, token: token}, function(data) {
 		if (data == true) {
 			var replacing = '<span class="rated">Rated</span>';
 			$('ul.rating').fadeTo(400, 0, function() {

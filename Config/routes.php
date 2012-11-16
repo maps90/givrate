@@ -1,6 +1,6 @@
 <?php
 
-CroogoRouter::connect('/give-rate/:alias/:rate/:rating/:user/*',
+CroogoRouter::connect('/rate/*',
 	array(
 		'plugin' => 'givrate',
 		'controller' => 'ratings',

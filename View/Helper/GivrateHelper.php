@@ -2,7 +2,7 @@
 
 class GivrateHelper extends AppHelper {
 
-	public $helpers = array('Html', 'Form', 'Js' => 'Jquery');
+	public $helpers = array('Html', 'Form', 'Js' => 'Jquery', 'Session');
 
 	public $allowedTypes = array('ul', 'ol', 'radio');
 
@@ -25,7 +25,7 @@ class GivrateHelper extends AppHelper {
 	 * userId: active session user.
 	 * alias: Model name.
 	 */
-	public function star($id, $userId, $alias, $options = array()) {
+	public function star($id, $token, $options = array()) {
 		if (empty($id)) {
 			throw new Exception(__d('givrate', 'You must set the id of the item you want to rate.'), E_USER_NOTICE);
 		}
@@ -48,10 +48,9 @@ class GivrateHelper extends AppHelper {
 			$link = null;
 			$options = Set::merge($options, array(
 				'class' => 'rate-link'.$id,
-				'data-alias' => $alias,
-				'data-rate_id' => $id,
+				'data-token' => $token,
 				'data-rating' => $i,
-				'data-user_id' => $userId,
+				'data-user_id' => $this->Session->read('Auth.User.id')
 				));
 			$link = $this->Html->link($i, $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));

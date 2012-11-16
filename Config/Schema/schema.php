@@ -25,7 +25,7 @@ class GivrateSchema extends CakeSchema {
 		);
 
 	var $rate_calculates = array(
-		'id' => array('type' => 'integer', 'null' => false, 'default' => NULl, 'length' => 11, 'key' => 'primary'),
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
 		'model' => array('type' => 'string', 'null' => false, 'default' => NULL, 'key' => 'index'),
 		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'count' => array('type' => 'integer', 'null' => false, 'default' => NULL),
@@ -38,4 +38,17 @@ class GivrateSchema extends CakeSchema {
 			'un_rate_calculate' => array('column' => array('foreign_key', 'model'), 'unique' => 1)
 			)
 		);
+
+	var $tokens = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
+		'model' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
+		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
+		'token' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
+		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+			'un_tokens' => array('column' => 'token', 'unique' => 1),
+			'un_tokens_foreign' => array('column' => array('foreign_key', 'model'), 'unique' => 1),
+		)
+	);
 }
