@@ -2,16 +2,9 @@
 if (empty($modelName)) {
 	$modelName = Inflector::singularize($this->name);
 }
-if (empty($photo)) {
-	return;
-}
 
-$user_id = $this->Session->read('Auth.User.id');
-if ($user_id == $photo['Album']['user_id']) {
-	return;
-}
 $Rating = ClassRegistry::init('Givrate.Rating');
-$isRated = $Rating->isRated($photo['Token']['token'], $user_id);
+$isRated = $Rating->isRated($modelName['Token']['token'], $user_id);
 ?>
 
 <div class='rating-el'>
@@ -19,7 +12,7 @@ $isRated = $Rating->isRated($photo['Token']['token'], $user_id);
 if (!empty($isRated)) {
 	echo $this->Html->tag('span', 'Rated', array('class' => 'rated'));
 } else {
-	echo $this->Givrate->star($photo['Photo']['id'], $photo['Token']['token']);
+	echo $this->Givrate->star($modelName[$modelName]['id'], $modelName['Token']['token']);
 }
 ?>
 </div>
