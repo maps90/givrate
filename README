@@ -1,0 +1,32 @@
+Giving Ratings Point for Cakephp 2.x - Croogo 1.5
+-------------------------------------------------
+
+A simple ratings point with tokenable, and can be use for any plugins
+
+Requirement:
+
+- cakephp > 2.2
+
+
+Croogo 1.5
+----------
+
+Activate the plugin via the admin beckend, or via CLI:
+
+`Console/cake ext activate plugin Givrate`
+
+- Create the schema
+- Use behaviors `Givrate.Tokenable` in target Model
+- use the helper star:
+	$id = Id from target model.
+	$token = Token from model `Token`.
+	echo $this->Givrate->star($id, $token);
+
+OR
+you can use the element from Givrate plugin rate-action.ctp
+
+FYI:
+If you want to check ratings already been rate. You can use:
+	function isRated($token, $userId); /*** from model `Givrate.Rating`
+
+the result from function isRated is @array
