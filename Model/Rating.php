@@ -81,15 +81,17 @@ class Rating extends GivrateAppModel {
 		)
 	);
 
-	public function isRated($modelName, $foreignKey, $user, $options = array()) {
+	public function isRated($token, $userId, $options = array()) {
 		if (isset($options['recursive']) && ($options['recursive'] == true)) {
 			$this->recursive = -1;
 		}
+		$Token = ClassRegistry::init('Givrate.Token');
+		$tokenData = $Token->findByToken($token);
 		$result = $this->find('first', array(
 			'conditions' => array(
-				'Rating.model' => $modelName,
-				'Rating.foreign_key' => $foreignKey,
-				'Rating.user_id' => $user
+				'Rating.model' => $tokenData['Token']['model'],
+				'Rating.foreign_key' => $tokenData['Token']['foreign_key'],
+				'Rating.user_id' => $userId
 				)
 			));
 		return $result;
@@ -105,15 +107,17 @@ class Rating extends GivrateAppModel {
 		}
 	}
 
-	public function rate($rateId, $rating, $userId, $alias) {
-		$rated = $this->isRated($alias, $rateId, $userId, array('recursive' => true));
+	public function rate($token, $rating, $userId) {
+		$rated = $this->isRated($token, $userId, array('recursive' => true));
 		if ($rated) {
 			return false;
 		}
+		$Token = ClassRegistry::init('Givrate.Token');
+		$tokenData = $Token->findByToken($token);
 		$data = array(
 			'user_id' => $userId,
-			'model' => $alias,
-			'foreign_key' => $rateId,
+			'model' => $tokenData['Token']['model'],
+			'foreign_key' => $tokenData['Token']['foreign_key'],
 			'value' => $rating
 			);
 		if ($this->save($data)) {

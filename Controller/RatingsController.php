@@ -131,10 +131,8 @@ class RatingsController extends GivrateAppController {
 			$rating = $this->request->data['rating'];
 			$user_id = $this->request->data['user_id'];
 			$token = $this->request->data['token'];
-			$this->loadModel('Givrate.Token');
-			$tokenData = $this->Token->findByToken($token);
 
-			$result = $this->Rating->rate($tokenData['Token']['foreign_key'], $rating, $user_id, $tokenData['Token']['model']);
+			$result = $this->Rating->rate($token, $rating, $user_id);
 			if ($result) {
 				$response = true;
 			} else {
