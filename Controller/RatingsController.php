@@ -129,7 +129,7 @@ class RatingsController extends GivrateAppController {
 	public function submit() {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$rating = $this->request->data['rating'];
-			$user_id = $this->request->data['user_id'];
+			$user_id = $this->Session->read('Auth.User.id');
 			$token = $this->request->data['token'];
 
 			$result = $this->Rating->rate($token, $rating, $user_id);

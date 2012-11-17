@@ -19,10 +19,9 @@ Givrate.namespace('Givrate.Ratings');
 
 Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
-	var userId = $(ev.currentTarget).attr('data-user_id').replace(/^s/, '');
 	var token = $(ev.currentTarget).attr('data-token');
 	var url = Croogo.basePath + 'rate/submit.json';
-	$.post(url, { rating: rating, user_id: userId, token: token}, function(data) {
+	$.post(url, { rating: rating, token: token}, function(data) {
 		if (data == true) {
 			var replacing = '<span class="rated">Rated</span>';
 			$('ul.rating').fadeTo(400, 0, function() {
