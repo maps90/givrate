@@ -43,13 +43,16 @@ class GivrateHelper extends AppHelper {
 
 		$stars = null;
 		for ($i = 1; $i <= $options['stars']; $i++) {
+			$title = array(1 => 'bad', 'good enough', 'good', 'awesome', 'amazing');
 			$link = null;
 			$options = Set::merge($options, array(
 				'class' => 'rate-link',
 				'data-token' => $token,
 				'data-rating' => $i,
+				'title' => $title[$i],
+				'escape' => false,
 				));
-			$link = $this->Html->link($i, $js, $options);
+			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF
 $('body').on('click', '.rate-link', Givrate.Ratings.star);
@@ -61,7 +64,7 @@ EOF;
 			$type = 'ul';
 		}
 
-		$stars = $this->Html->tag($type, $stars, array('class' => 'rating'));
+		$stars = $this->Html->div('stars', $this->Html->tag($type, $stars, array('class' => 'rating')));
 		$this->Js->buffer($script);
 		return $stars;
 	}
