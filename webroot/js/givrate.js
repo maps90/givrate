@@ -23,9 +23,9 @@ Givrate.Ratings.star = function(ev) {
 	var url = Croogo.basePath + 'rate/submit.json';
 	$.post(url, { rating: rating, token: token}, function(data) {
 		if (data == true) {
-			var replacing = '<span class="rated">Rated</span>';
+//			var replacing = '<span class="rated">Thanks ..</span>';
 			$('ul.rating').fadeTo(400, 0, function() {
-				$(this).html(replacing).fadeTo(400, 1);
+//				$(this).html(replacing).fadeTo(400, 1);
 			});
 		} else {
 			alert('Failed to save your rating');
