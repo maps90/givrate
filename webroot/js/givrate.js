@@ -27,6 +27,8 @@ Givrate.Ratings.star = function(ev) {
 			$('ul.rating').fadeTo(400, 0, function() {
 				$(this).html(replacing).fadeTo(400, 1);
 			});
+		} else {
+			alert('Failed to save your rating');
 		}
 	});
 	return false;

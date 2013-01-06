@@ -132,9 +132,14 @@ class RatingsController extends GivrateAppController {
 			$user_id = $this->Session->read('Auth.User.id');
 			$token = $this->request->data['token'];
 
-			$result = $this->Rating->rate($token, $rating, $user_id);
-			if ($result) {
-				$response = true;
+			$star = range(1, Configure::read('Rating.star'));
+			if (in_array($rating, array_values($star)) === true) {
+				$result = $this->Rating->rate($token, $rating, $user_id);
+				if ($result) {
+					$response = true;
+				} else {
+					$response = false;
+				}
 			} else {
 				$response = false;
 			}
