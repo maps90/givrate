@@ -22,14 +22,19 @@ Givrate.Ratings.star = function(ev) {
 	var token = $(ev.currentTarget).attr('data-token');
 	var url = Croogo.basePath + 'rate/submit.json';
 	$.post(url, { rating: rating, token: token}, function(data) {
+		if (data == false) {
+			alert('False');
+		}
+
 		if (data == true) {
-//			var replacing = '<span class="rated">Thanks ..</span>';
-			$('ul.rating').fadeTo(400, 0, function() {
-//				$(this).html(replacing).fadeTo(400, 1);
-			});
-		} else {
-			alert('Failed to save your rating');
+			var current_val = $('.avg').text();
+			var count_user = $('.stat.rate').text();
+			var current_rate = ((parseInt(current_val) + parseInt(rating)) / (parseInt(count_user) + 1)) * 18;
+			var now_val = ((parseInt(current_val) + parseInt(rating)) / (parseInt(count_user) + 1));
+			$('ul.rating').css({'width': current_rate + 'px', 'background-position' : '0px 72px'});
+			$('.avg span').text(Math.round(now_val).toFixed(1));
+			$('.stars .rating li a').css({'display': 'none'});
+			return false;
 		}
 	});
-	return false;
 }
