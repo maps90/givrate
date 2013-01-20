@@ -20,8 +20,9 @@ Givrate.namespace('Givrate.Ratings');
 Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
 	var token = $(ev.currentTarget).attr('data-token');
+	var userId = $(ev.currentTarget).attr('data-id');
 	var url = Croogo.basePath + 'rate/submit.json';
-	$.post(url, { rating: rating, token: token}, function(data) {
+	$.post(url, { rating: rating, token: token, user: userId}, function(data) {
 		if (data == false) {
 			alert('False');
 		}

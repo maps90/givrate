@@ -51,4 +51,14 @@ class GivrateSchema extends CakeSchema {
 			'un_tokens_foreign' => array('column' => array('foreign_key', 'model'), 'unique' => 1),
 		)
 	);
+
+	var $user_points = array(
+		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
+		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
+		'raters' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+		'points' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+		'indexes' => array(
+			'PRIMARY' => array('column' => 'id', 'unique' => 1),
+		)
+	);
 }

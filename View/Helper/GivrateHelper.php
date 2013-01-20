@@ -23,7 +23,7 @@ class GivrateHelper extends AppHelper {
 	 * Givrate::star helper for submit rate
 	 * @token: value
 	 */
-	public function star($token, $options = array()) {
+	public function star($token, $userId, $options = array()) {
 		if (empty($token)) {
 			throw new Exception(__d('givrate', 'You must set the id of the item you want to rate.'), E_USER_NOTICE);
 		}
@@ -48,6 +48,7 @@ class GivrateHelper extends AppHelper {
 			$options = Set::merge($options, array(
 				'class' => 'rate-link',
 				'data-token' => $token,
+				'data-id' => $userId,
 				'data-rating' => $i,
 				'title' => $title[$i],
 				'escape' => false,
