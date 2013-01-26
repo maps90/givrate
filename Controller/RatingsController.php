@@ -130,7 +130,7 @@ class RatingsController extends GivrateAppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$rating = $this->request->data['rating'];
 			$user_id = $this->Session->read('Auth.User.id');
-			$owner = $this->request->data['user'];
+			$owner = $this->request->data['id'];
 			$token = $this->request->data['token'];
 
 			$star = range(1, Configure::read('Rating.star'));

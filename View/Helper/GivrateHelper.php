@@ -48,8 +48,8 @@ class GivrateHelper extends AppHelper {
 			$options = Set::merge($options, array(
 				'class' => 'rate-link',
 				'data-token' => $token,
-				'data-id' => $userId,
-				'data-rating' => $i,
+				'data-id' => 's'.$userId,
+				'data-rating' => 's'.$i,
 				'title' => $title[$i],
 				'escape' => false,
 				));
