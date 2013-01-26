@@ -57,6 +57,8 @@ class GivrateSchema extends CakeSchema {
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'raters' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'points' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+		'avg' => array('type' => 'float', 'null' => true, 'default' => '0', 'length' => '8,4'),
+		'point_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
 		)

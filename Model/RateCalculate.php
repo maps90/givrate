@@ -87,14 +87,17 @@ class RateCalculate extends GivrateAppModel {
 				'RateCalculate.foreign_key' => $foreignKey
 				)
 			));
+
+		App::uses('PointUtil', 'Givrate.Utility');
+		$this->Point = new PointUtil;
 		if (!empty($rated)) {
-			$count = $this->_countRate($rated['RateCalculate']['count']);
-			$sum = $this->_sumRate($rated['RateCalculate']['sum'], $value);
-			$avg = $this->_avgRate($sum, $count);
+			$count = $this->Point->rateCount($rated['RateCalculate']['count']);
+			$sum = $this->Point->rateSum($rated['RateCalculate']['sum'], $value);
+			$avg = $this->Point->rateAvg($sum, $count);
 		} else {
-			$count = $this->_countRate(0);
-			$sum = $this->_sumRate(0, $value);
-			$avg = $this->_avgRate($sum, $count);
+			$count = $this->Point->rateCount(0);
+			$sum = $this->Point->rateSum(0, $value);
+			$avg = $this->Point->rateAvg($sum, $count);
 		}
 
 		$data['RateCalculate']['count'] = $count;
@@ -114,21 +117,6 @@ class RateCalculate extends GivrateAppModel {
 		} else {
 			return false;
 		}
-	}
-
-	public function _avgRate($value = null, $count = null) {
-		$avg = ($value / $count);
-		return $avg;
-	}
-
-	public function _countRate($count = null) {
-		$count = $count + 1;
-		return $count;
-	}
-
-	public function _sumRate($oldValue = null, $value = null) {
-		$sum = $oldValue + $value;
-		return $sum;
 	}
 
 	public function _findBestRate($state, $query, $results = array()) {
