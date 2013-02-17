@@ -97,7 +97,7 @@ class Rating extends GivrateAppModel {
 		return $result;
 	}
 
-	public function _calculateRating($data) {
+	protected function _calculateRating($data) {
 		$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
 		if (!empty($data)) {
 			$alias = $data['Rating']['model'];
@@ -107,7 +107,7 @@ class Rating extends GivrateAppModel {
 		}
 	}
 
-	public function rate($token, $rating, $userId, $ownerId) {
+	public function rate($token, $rating, $userId, $ownerId = null) {
 		$rated = $this->isRated($token, $userId, array('recursive' => true));
 		if ($rated) {
 			return false;
@@ -121,8 +121,10 @@ class Rating extends GivrateAppModel {
 			'value' => $rating
 			);
 		if ($this->save($data)) {
-			$UserPoint = ClassRegistry::init('Givrate.UserPoint');
-			$UserPoint->countMyPoint($ownerId, $rating);
+			if ($ownerId != null) {
+				$UserPoint = ClassRegistry::init('Givrate.UserPoint');
+				$UserPoint->countMyPoint($ownerId, $rating);
+			}
 			return true;
 		} else {
 			return false;

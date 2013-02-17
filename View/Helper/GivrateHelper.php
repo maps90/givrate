@@ -4,8 +4,6 @@ class GivrateHelper extends AppHelper {
 
 	public $helpers = array('Html', 'Form', 'Js' => 'Jquery');
 
-	public $allowedTypes = array('ul', 'ol', 'radio');
-
 	public function beforeRender() {
 		$params = $this->_View->params;
 		if (isset($params['isAjax']) && $params['isAjax'] === true) {
@@ -22,23 +20,23 @@ class GivrateHelper extends AppHelper {
 	/*
 	 * Givrate::star helper for submit rate
 	 * @token: value
+	 * options:
+	 *	- userId : owner id for user point. If empty will not creating for user point.
 	 */
-	public function star($token, $userId, $options = array()) {
+	public function star($token, $options = array()) {
 		if (empty($token)) {
 			throw new Exception(__d('givrate', 'You must set the id of the item you want to rate.'), E_USER_NOTICE);
 		}
 		$js = 'javascript:;';
-
-		$defaults = array(
-			'type' => 'ul',
+		$options = Set::merge($options, array(
 			'class' => 'rating',
 			'link' => true,
 			'value' => 0,
-			);
-		if (isset($options['stars'])) {
-			$options = Set::merge($defaults, array('stars' => $options['stars']));
-		} else {
-			$options = Set::merge($defaults, array('stars' => 5));
+			'stars' => 5,
+		));
+		if (isset($options['userId'])) {
+			$options = Set::merge($options, array('data-id' => 's'.$options['userId']));
+			unset($options['userId']);
 		}
 
 		$stars = null;
@@ -48,24 +46,18 @@ class GivrateHelper extends AppHelper {
 			$options = Set::merge($options, array(
 				'class' => 'rate-link',
 				'data-token' => $token,
-				'data-id' => 's'.$userId,
 				'data-rating' => 's'.$i,
 				'title' => $title[$i],
 				'escape' => false,
-				));
+			));
 			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF
 $('body').on('click', '.rate-link', Givrate.Ratings.star);
 EOF;
 		}
-		if (in_array($options['type'], $this->allowedTypes)) {
-			$type = $options['type'];
-		} else {
-			$type = 'ul';
-		}
 
-		$stars = $this->Html->div('stars', $this->Html->tag($type, $stars, array('class' => 'rating')));
+		$stars = $this->Html->div('stars', $this->Html->tag('ul', $stars, array('class' => 'rating')));
 		$this->Js->buffer($script);
 		return $stars;
 	}
