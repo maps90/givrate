@@ -1,0 +1,39 @@
+.avg {
+	font-size: 4em;
+	font-weight: bold;
+	line-height: .95em;
+	text-align: center;
+	color: #555555;
+}
+.avg span {
+	display: inline-block;
+}
+
+.stars {
+	margin: 0 auto;
+	background: url(../img/stars.png);
+	max-width: 18px;
+	height: 18px;
+}
+.stars .rating {
+	background: url(../img/stars.png);
+	height: 18px;
+	margin: 0;
+	list-style: none;
+	font-style: 12px;
+	line-height: 0;
+}
+.stars .rating li {
+	display: inline;
+	border-bottom: 0;
+	padding: 0;
+	width: 18px;
+	height: 18px;
+}
+.stars .rating li a {
+	padding: 0 0 0 15px;
+	outline: none;
+}
+.stars .rating li a:hover {
+	text-decoration: none;
+}

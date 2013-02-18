@@ -17,6 +17,32 @@ Givrate.namespace = function() {
 
 Givrate.namespace('Givrate.Ratings');
 
+Givrate.Ratings.list = function() {
+	var len = $('ul.rating li').length;
+	var avg = $('.avg span').text();
+	var rate_width = avg * 18;
+	var minWidth = 18;
+
+	for (i = 1; i <= len; i++) {
+		var maxWidth = minWidth * i;
+		$('div.stars').css('max-width', maxWidth);
+		$('li.star' + [i]).hover(
+			function() {
+				var target = $(this).children('.rate-link').data('rating').replace(/^s/, '');
+				if (target == 1) {
+					var rwidth = minWidth;
+				} else {
+					var rwidth = minWidth * target;
+				}
+				$('ul.rating').css({'width': rwidth + 'px', 'background-position' : '0px 36px'});
+			},
+			function() {
+				$('ul.rating').css({'width': '0px', 'background-position': '0px 72px'});
+			}
+		);
+	}
+}
+
 Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
 	var token = $(ev.currentTarget).attr('data-token');
