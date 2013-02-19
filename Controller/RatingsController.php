@@ -132,8 +132,9 @@ class RatingsController extends GivrateAppController {
 			$user_id = $this->Session->read('Auth.User.id');
 			$owner = $this->request->data['id'];
 			$token = $this->request->data['token'];
+			$stars = $this->request->data['stars'];
 
-			$star = range(1, Configure::read('Rating.star'));
+			$star = range(1, $stars);
 			if (in_array($rating, array_values($star)) === true) {
 				$result = $this->Rating->rate($token, $rating, $user_id, $owner);
 				if ($result) {

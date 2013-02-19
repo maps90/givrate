@@ -68,14 +68,18 @@ class GivrateHelper extends AppHelper {
 		}
 
 		if (isset($options['title'])) {
-			$title = array_combine(range(1, count($options['title'])), array_values($options['title']));
+			if ($options['title'] != false) {
+				$title = array_combine(range(1, count($options['title'])), array_values($options['title']));
+
+				$titleCount = count($title);
+				if ($titleCount != $options['stars']) {
+					return __d('givrate', 'Value star title is not the same as the value stars');
+				}
+			} else {
+				$title = array();
+			}
 		} else {
 			$title = array(1 => 'bad', 'good enough', 'good', 'awesome', 'amazing');
-		}
-
-		$titleCount = count($title);
-		if ($titleCount != $options['stars']) {
-			return __d('givrate', 'Star title is not the same as the value star');
 		}
 
 		$stars = null;
@@ -85,9 +89,11 @@ class GivrateHelper extends AppHelper {
 				'class' => 'rate-link',
 				'data-token' => $token,
 				'data-rating' => 's'.$i,
-				'title' => $title[$i],
 				'escape' => false,
 			));
+			if ($title != array()) {
+				$options = Set::merge($options, array('title' => $title[$i]));
+			}
 			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF

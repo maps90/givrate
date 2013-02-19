@@ -47,10 +47,11 @@ Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
 	var token = $(ev.currentTarget).attr('data-token');
 	var userId = $(ev.currentTarget).attr('data-id').replace(/^s/, '');
+	var stars = $(ev.currentTarget).attr('stars');
 	var url = Croogo.basePath + 'rate/submit.json';
-	$.post(url, { rating: rating, token: token, id: userId}, function(data) {
+	$.post(url, { rating: rating, token: token, id: userId, stars: stars}, function(data) {
 		if (data == false) {
-			alert('False');
+			alert('Failed');
 		}
 
 		if (data == true) {
