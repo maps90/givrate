@@ -29,7 +29,7 @@ class GivrateSchema extends CakeSchema {
 		'model' => array('type' => 'string', 'null' => false, 'default' => NULL, 'key' => 'index'),
 		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'count' => array('type' => 'integer', 'null' => false, 'default' => NULL),
-		'sum' => array('type' => 'integer', 'null' => false, 'default' => NULL),
+		'point' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'avg' => array('type' => 'float', 'null' => true, 'default' => '0', 'length' => '8,4'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),

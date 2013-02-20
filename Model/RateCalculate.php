@@ -51,7 +51,7 @@ class RateCalculate extends GivrateAppModel {
 			),
 		),
 
-		'sum' => array(
+		'point' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
 				//'message' => 'Your custom message here',
@@ -93,7 +93,7 @@ class RateCalculate extends GivrateAppModel {
 		$this->Point = new PointUtil;
 		if (!empty($rated)) {
 			$count = $this->Point->rateCount($rated['RateCalculate']['count']);
-			$sum = $this->Point->rateSum($rated['RateCalculate']['sum'], $value);
+			$sum = $this->Point->rateSum($rated['RateCalculate']['point'], $value);
 			$avg = $this->Point->rateAvg($sum, $count);
 		} else {
 			$count = $this->Point->rateCount(0);
@@ -102,7 +102,7 @@ class RateCalculate extends GivrateAppModel {
 		}
 
 		$data['RateCalculate']['count'] = $count;
-		$data['RateCalculate']['sum'] = $sum;
+		$data['RateCalculate']['point'] = $sum;
 		$data['RateCalculate']['avg'] = $avg;
 		$data['RateCalculate']['type'] = $type;
 
