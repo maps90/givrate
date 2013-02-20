@@ -133,7 +133,11 @@ class RatingsController extends GivrateAppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$rating = $this->request->data['rating'];
 			$user_id = $this->Session->read('Auth.User.id');
-			$owner = $this->request->data['id'];
+			if (isset($this->request->data['id'])) {
+				$owner = $this->request->data['id'];
+			} else {
+				$owner = null;
+			}
 			$token = $this->request->data['token'];
 			$stars = $this->request->data['stars'];
 			$rtype = $this->request->data['rtype'];
@@ -174,7 +178,11 @@ class RatingsController extends GivrateAppController {
 		if ($this->request->is('post') || $this->request->is('put')) {
 			$vote = $this->request->data['vote'];
 			$user_id = $this->Session->read('Auth.User.id');
-			$owner = $this->request->data['id'];
+			if (isset($this->request->data['id'])) {
+				$owner = $this->request->data['id'];
+			} else {
+				$owner = null;
+			}
 			$token = $this->request->data['token'];
 			$rtype = $this->request->data['rtype'];
 

@@ -46,10 +46,14 @@ Givrate.Ratings.list = function() {
 Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating');
 	var token = $(ev.currentTarget).attr('data-token');
-	var userId = $(ev.currentTarget).attr('data-id').replace(/^s/, '');
+	var userId = $(ev.currentTarget).attr('data-id');
 	var rtype = $(ev.currentTarget).attr('rtype');
 	var stars = $(ev.currentTarget).attr('stars');
 	var url = Croogo.basePath + 'rate/submit.json';
+
+	if (userId != null) {
+		userId = userId.replace(/^s/, '');
+	}
 
 	if (rating.substr(0, 1) != 's') {
 		alert('Rating failed!');
@@ -73,10 +77,14 @@ Givrate.Ratings.star = function(ev) {
 
 Givrate.Ratings.vote = function(ev) {
 	var vote = $(ev.currentTarget).attr('data-vote');
-	var userId = $(ev.currentTarget).attr('data-id').replace(/^s/, '');
+	var userId = $(ev.currentTarget).attr('data-id');
 	var token = $(ev.currentTarget).attr('data-token');
 	var rtype = $(ev.currentTarget).attr('data-type');
 	var url = Croogo.basePath + 'rate/vote.json';
+
+	if (userId != null) {
+		userId = userId.replace(/^s/, '');
+	}
 
 	if (vote.substr(0, 1) != 's') {
 		alert('Voting failed!');
