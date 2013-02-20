@@ -122,6 +122,21 @@ class RateCalculate extends GivrateAppModel {
 		}
 	}
 
+	public function getPoint($token, $type, $options = array()) {
+		if (isset($options['recursive'])) {
+			$this->recursive = $options['recursive'];
+		}
+		$token = ClassRegistry::init('Givrate.Token')->findByToken($token);
+		$result = $this->find('first', array(
+			'conditions' => array(
+				'RateCalculate.model' => $token['Token']['model'],
+				'RateCalculate.foreign_key' => $token['Token']['foreign_key'],
+				'RateCalculate.type' => $type
+			)
+		));
+		return $result;
+	}
+
 	public function _findBestRate($state, $query, $results = array()) {
 		if ($state === 'before') {
 			$limit = isset($query['limit']) ? $query['limit'] : null;

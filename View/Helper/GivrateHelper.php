@@ -20,20 +20,58 @@ class GivrateHelper extends AppHelper {
 
 /*
  * Givrate::displayPoint
- * Display point rate with the stars rate.
- * @value : value data
- * @options: same value like Givrate::star
+ *
+ * Display point Rating or Vote
+ * @token: value
+ * @options:
+ *	- ratelink: display rating action link. Default false.
+ *	- votelink: display vote action link. Default false.
+ *
+ * Array @options can be combined with the @options Givrate::star and Givrate::vote
  */
-	public function displayPoint($value, $options = array()) {
-		if (empty($value)) {
-			throw new Exception(__d('givrate', 'Empty value.'));
+	public function displayPoint($token, $type, $options = array()) {
+		if (empty($token) || empty($type)) {
+			return __d('givrate', 'Empty Token or Type.');
 		}
-		if (isset($value['RateCalculate'])) {
-			$avg = empty($value['RateCalculate'][0]['avg']) ? 0 : number_format($value['RateCalculate'][0]['avg'], 1);
+		$options = Set::merge(array(
+			'ratelink' => false,
+			'votelink' => false,
+		), $options);
+
+		$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
+		$result = $RateCalculate->getPoint($token, $type, array('recursive' => -1));
+
+		switch($type) {
+			case 'rating':
+				$field = 'avg';
+				if ($options['ratelink'] == true) {
+					$link = $this->star($token, $options);
+				} else {
+					$link = '';
+				}
+				$point = number_format($result['RateCalculate'][$field], 1);
+			break;
+			case 'vote':
+				$field = 'point';
+				if ($options['votelink'] == true) {
+					$link = $this->vote($token, $options);
+				} else {
+					$link = '';
+				}
+				$point = $result['RateCalculate'][$field];
+			break;
+			default:
+				$field = 'avg';
+				$link = '';
+				$point = number_format($result['RateCalculate'][$field], 1);
+			break;
 		}
-		$rating = $this->star($value['Token']['token'], $options);
-		$avg = $this->Html->div('span7', $this->Html->div('avg', $this->Html->tag('span', $avg)) . $rating);
-		return $this->Html->div('row-fluid', $avg);
+		unset($options['ratelink']);
+		unset($options['votelink']);
+
+		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
+		$point = $this->Html->div('span7', $this->Html->div('avg', $this->Html->tag('span', $point)) . $link);
+		return $this->Html->div('row-fluid', $point);
 	}
 
 /*
