@@ -1,7 +1,7 @@
 {
 	"name": "Givrate",
-	"description": "Giving Ratings",
+	"description": "Rating / Vote plugin for Croogo",
 
-	"author": "Picapik",
-	"authorEmail": "contact@picapik.com"
+	"author": "Eko Tristiyono",
+	"authorEmail": "kahitam@gmail.com"
 }
