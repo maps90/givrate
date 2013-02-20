@@ -1,9 +1,8 @@
 <?php
 
-CroogoRouter::connect('/rate/*',
+CroogoRouter::connect('/rate/:action',
 	array(
 		'plugin' => 'givrate',
 		'controller' => 'ratings',
-		'action' => 'submit'
 		)
 	);

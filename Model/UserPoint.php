@@ -23,10 +23,11 @@ class UserPoint extends GivrateAppModel {
 		)
 	);
 
-	public function countMyPoint($userId, $value) {
+	public function countMyPoint($userId, $value, $type) {
 		$userPoint = $this->find('first', array(
 			'conditions' => array(
-				'UserPoint.user_id' => $userId
+				'UserPoint.user_id' => $userId,
+				'UserPoint.type' => $type,
 			)
 		));
 
@@ -37,10 +38,12 @@ class UserPoint extends GivrateAppModel {
 			$data['UserPoint']['user_id'] = $userId;
 			$data['UserPoint']['raters'] = 1;
 			$data['UserPoint']['points'] = $value;
+			$data['UserPoint']['type'] = $type;
 		} else {
 			$this->id = $userPoint['UserPoint']['id'];
 			$data['UserPoint']['raters'] = $userPoint['UserPoint']['raters'] + 1;
 			$data['UserPoint']['points'] = $userPoint['UserPoint']['points'] + $value;
+			$data['UserPoint']['type'] = $type;
 		}
 		$avg = $this->Point->rateAvg($data['UserPoint']['points'], $data['UserPoint']['raters']);
 		$data['UserPoint']['avg'] = $avg;

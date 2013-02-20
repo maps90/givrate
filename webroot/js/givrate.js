@@ -44,14 +44,22 @@ Givrate.Ratings.list = function() {
 }
 
 Givrate.Ratings.star = function(ev) {
-	var rating = $(ev.currentTarget).attr('data-rating').replace(/^s/, '');
+	var rating = $(ev.currentTarget).attr('data-rating');
 	var token = $(ev.currentTarget).attr('data-token');
 	var userId = $(ev.currentTarget).attr('data-id').replace(/^s/, '');
+	var rtype = $(ev.currentTarget).attr('rtype');
 	var stars = $(ev.currentTarget).attr('stars');
 	var url = Croogo.basePath + 'rate/submit.json';
-	$.post(url, { rating: rating, token: token, id: userId, stars: stars}, function(data) {
-		if (data == false) {
-			alert('Failed');
+
+	if (rating.substr(0, 1) != 's') {
+		alert('Rating failed!');
+		return false;
+	}
+	var rating = rating.replace(/^s/, '');
+
+	$.post(url, { rating: rating, rtype: rtype, token: token, id: userId, stars: stars}, function(data) {
+		if (data.result == false) {
+			alert(data.msg);
 		}
 
 		if (data == true) {
@@ -63,6 +71,26 @@ Givrate.Ratings.star = function(ev) {
 			$('.avg span').text(Math.round(now_val).toFixed(1));
 			$('.stars .rating li a').css({'display': 'none'});
 			return false;
+		}
+	});
+}
+
+Givrate.Ratings.vote = function(ev) {
+	var vote = $(ev.currentTarget).attr('data-vote');
+	var userId = $(ev.currentTarget).attr('data-id').replace(/^s/, '');
+	var token = $(ev.currentTarget).attr('data-token');
+	var rtype = $(ev.currentTarget).attr('data-type');
+	var url = Croogo.basePath + 'rate/vote.json';
+
+	if (vote.substr(0, 1) != 's') {
+		alert('Voting failed!');
+		return false;
+	}
+	var vote = vote.replace(/^s/, '');
+
+	$.post(url, { vote: vote, rtype: rtype, token: token, id: userId}, function(data) {
+		if (data.result == false) {
+			alert(data.msg);
 		}
 	});
 }

@@ -11,6 +11,7 @@ class RatingsController extends GivrateAppController {
 		parent::beforeFilter();
 
 		switch ($this->request->params['action']) {
+			case 'vote':
 			case 'submit':
 				$this->Security->csrfCheck = false;
 				$this->Security->validatePost = false;
@@ -124,7 +125,7 @@ class RatingsController extends GivrateAppController {
 	}
 
 /**
- * submit add rating
+ * submit rating
  */
 	public function submit() {
 		if ($this->request->is('post') || $this->request->is('put')) {
@@ -133,17 +134,61 @@ class RatingsController extends GivrateAppController {
 			$owner = $this->request->data['id'];
 			$token = $this->request->data['token'];
 			$stars = $this->request->data['stars'];
+			$rtype = $this->request->data['rtype'];
+
+			$responseVal = array(
+				'result' => false,
+				'msg' => Configure::read('Givrate.error_msg_rating')
+			);
 
 			$star = range(1, $stars);
 			if (in_array($rating, array_values($star)) === true) {
-				$result = $this->Rating->rate($token, $rating, $user_id, $owner);
+				$result = $this->Rating->rate($token, $rtype, $rating, $user_id, $owner);
 				if ($result) {
 					$response = true;
 				} else {
-					$response = false;
+					$response = $responseVal;
 				}
 			} else {
-				$response = false;
+				$response = $responseVal;
+			}
+			$this->set(compact('response'));
+			$this->set('_serialize', 'response');
+		}
+	}
+
+/**
+ * vote
+ */
+	public function vote() {
+		if ($this->request->is('post') || $this->request->is('put')) {
+			$vote = $this->request->data['vote'];
+			$user_id = $this->Session->read('Auth.User.id');
+			$owner = $this->request->data['id'];
+			$token = $this->request->data['token'];
+			$rtype = $this->request->data['rtype'];
+
+			$responseVal = array(
+				'result' => false,
+				'msg' => Configure::read('Givrate.error_msg_vote')
+			);
+
+			$voteNumbers = Configure::read('Givrate.vote_approved');
+			$voteNumbers = explode(',', $voteNumbers);
+			$votes = array();
+			foreach ($voteNumbers as $voteNumber) {
+				$votes[] = $voteNumber;
+			}
+
+			if (in_array($vote, $votes) === true) {
+				$result = $this->Rating->rate($token, $rtype, $vote, $user_id, $owner);
+				if ($result) {
+					$response = true;
+				} else {
+					$response = $responseVal;
+				}
+			} else {
+				$response = $responseVal;
 			}
 			$this->set(compact('response'));
 			$this->set('_serialize', 'response');

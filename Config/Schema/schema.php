@@ -16,11 +16,11 @@ class GivrateSchema extends CakeSchema {
 		'model' => array('type' => 'string', 'null' => false, 'default' => NULL, 'key' => 'index'),
 		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'value' => array('type' => 'integer', 'null' => false, 'default' => '0'),
+		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'un_rating' => array('column' => array('user_id', 'foreign_key', 'model'), 'unique' => 1)
 			)
 		);
 
@@ -31,11 +31,11 @@ class GivrateSchema extends CakeSchema {
 		'count' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'sum' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'avg' => array('type' => 'float', 'null' => true, 'default' => '0', 'length' => '8,4'),
+		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
-			'un_rate_calculate' => array('column' => array('foreign_key', 'model'), 'unique' => 1)
 			)
 		);
 
@@ -58,6 +58,7 @@ class GivrateSchema extends CakeSchema {
 		'raters' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'points' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'avg' => array('type' => 'float', 'null' => true, 'default' => '0', 'length' => '8,4'),
+		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
 		'point_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
