@@ -62,13 +62,9 @@ Givrate.Ratings.star = function(ev) {
 			alert(data.msg);
 		}
 
-		if (data == true) {
-			var current_val = $('.avg').text();
-			var count_user = $('.stat.rate').text();
-			var current_rate = ((parseInt(current_val) + parseInt(rating)) / (parseInt(count_user) + 1)) * 18;
-			var now_val = ((parseInt(current_val) + parseInt(rating)) / (parseInt(count_user) + 1));
-			$('ul.rating').css({'width': current_rate + 'px', 'background-position' : '0px 72px'});
-			$('.avg span').text(Math.round(now_val).toFixed(1));
+		if (data.result == true) {
+			$('ul.rating').css({'width': data.stars + 'px', 'background-position' : '0px 72px'});
+			$('.avg span').text(parseFloat(data.avg).toFixed(1));
 			$('.stars .rating li a').css({'display': 'none'});
 			return false;
 		}

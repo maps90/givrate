@@ -1,5 +1,6 @@
 <?php
 App::uses('GivrateAppController', 'Givrate.Controller');
+App::uses('PointUtil', 'Givrate.Utility');
 /**
  * Ratings Controller
  *
@@ -17,6 +18,7 @@ class RatingsController extends GivrateAppController {
 				$this->Security->validatePost = false;
 			break;
 		}
+		$this->Point = new PointUtil;
 	}
 
 
@@ -145,7 +147,15 @@ class RatingsController extends GivrateAppController {
 			if (in_array($rating, array_values($star)) === true) {
 				$result = $this->Rating->rate($token, $rtype, $rating, $user_id, $owner);
 				if ($result) {
-					$response = true;
+					$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
+					$rate = $RateCalculate->getPoint($token, $rtype, array('recursive' => -1));
+					$currentStars = $this->Point->currentStars($rate['RateCalculate']['avg'], $rate['RateCalculate']['point'], $rate['RateCalculate']['count']);
+
+					$response = array(
+						'result' => true,
+						'avg' => $rate['RateCalculate']['avg'],
+						'stars' => $currentStars
+					);
 				} else {
 					$response = $responseVal;
 				}

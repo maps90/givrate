@@ -81,9 +81,9 @@ class Rating extends GivrateAppModel {
 		)
 	);
 
-	public function isRated($token, $userId, $type, $options = array()) {
-		if (isset($options['recursive']) && ($options['recursive'] == true)) {
-			$this->recursive = -1;
+	public function checking($token, $userId, $type, $options = array()) {
+		if (isset($options['recursive'])) {
+			$this->recursive = $options['recursive'];
 		}
 		$Token = ClassRegistry::init('Givrate.Token');
 		$tokenData = $Token->findByToken($token);
@@ -110,7 +110,7 @@ class Rating extends GivrateAppModel {
 	}
 
 	public function rate($token, $type, $rating, $userId, $ownerId = null) {
-		$rated = $this->isRated($token, $userId, $type, array('recursive' => true));
+		$rated = $this->checking($token, $userId, $type, array('recursive' => -1));
 		if ($rated) {
 			return false;
 		}

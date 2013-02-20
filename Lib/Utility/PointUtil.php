@@ -17,4 +17,9 @@ class PointUtil extends Object {
 		$sum = $oldValue + $value;
 		return $sum;
 	}
+
+	public function currentStars($avg, $point, $rateCount) {
+		$currentRate  = round((($avg + $point) / ($rateCount + 1)) * 18);
+		return $currentRate;
+	}
 }
