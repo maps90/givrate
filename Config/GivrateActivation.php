@@ -16,6 +16,8 @@ class GivrateActivation {
 		// ACL: set ACOs with permissions
 		$controller->Croogo->addAco('Givrate/Ratings/submit', array('registered'));
 		$controller->Croogo->addAco('Givrate/Ratings/vote', array('registered'));
+		$controller->Croogo->addAco('Givrate/RateCalculates/admin_index', array('admin'));
+		$controller->Croogo->addAco('Givrate/UserPoints/admin_index', array('admin'));
 
 
 		$controller->Setting->write('Givrate.vote_approved', '1', array('editable' => 1, 'title' => 'Vote Number Approved (Separated with comma)'));
