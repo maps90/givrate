@@ -73,7 +73,7 @@ class GivrateHelper extends AppHelper {
 
 		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
 		$point = $this->Html->div('span7', $this->Html->div('avg', $this->Html->tag('span', $point)) . $link);
-		return $this->Html->div('row-fluid', $point);
+		return $point;
 	}
 
 /*
