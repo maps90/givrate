@@ -6,12 +6,7 @@ App::uses('GivrateAppModel', 'Givrate.Model');
  * @property User $User
  */
 class Rating extends GivrateAppModel {
-/**
- * Use database config
- *
- * @var string
- */
-	public $useDbConfig = 'ratings';
+
 /**
  * Validation rules
  *

@@ -3,8 +3,6 @@ App::uses('GivrateAppModel', 'Givrate.Model');
 
 class UserPoint extends GivrateAppModel {
 
-	public $useDbConfig = 'ratings';
-
 	public $validate = array(
 		'user_id' => array(
 			'notempty' => array(

@@ -1,8 +1,6 @@
 <?php 
 class GivrateSchema extends CakeSchema {
 
-	public $connection = 'ratings';
-
 	public function before($event = array()) {
 		return true;
 	}

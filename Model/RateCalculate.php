@@ -5,12 +5,7 @@ App::uses('GivrateAppModel', 'Givrate.Model');
  *
  */
 class RateCalculate extends GivrateAppModel {
-/**
- * Use database config
- *
- * @var string
- */
-	public $useDbConfig = 'ratings';
+
 /**
  * Validation rules
  *
