@@ -37,10 +37,10 @@ Quickstar Guide
 
 use Givrate::helpers:
 
-$options = array(
-	'userId' => $Model['Model']['user_id']
-);
-`If using userId options. Givrate will be processing point for users`
+	$options = array(
+		'userId' => $model['Model']['user_id']
+	);
+If using userId options. Givrate will be processing point for users
 
 
 Example
@@ -48,22 +48,63 @@ Example
 
 * Givrate::star (for rating stars)
 
-	$this->Givrate->star($Model['Token']['token'], $options);
+	$this->Givrate->star($model['Token']['token'], array(
+		'userId' => $model['Model']['user_id']
+	));
+
+
 
 
 * Givrate::displayPoint (for displaying point of rating or vote)
 
-@type : switch `rating` or `vote`
+$type : switch `rating` or `vote`.
 
-	$this->Givrate->displayPoint($Model['Token']['token'], 'rating');
+$options:
+
+ratelink : display rating action link. Default false
+
+votelink : display vote action link.  Default false
+
+	$this->Givrate->displayPoint($model['Token']['token'], 'rating', array(
+		'userId' => $model['Model']['user_id'],
+		'ratelink' => true
+	));
+
 
 
 * Givrate::vote
 
-	$this->Givrate->vote($Model['Token']['token'], $options);
+	$this->Givrate->vote($model['Token']['token'], array(
+		'userId' => $model['Model']['user_id']
+	));
 
 
-Note: I still consider this plugin as very unstable
+Givrate Components
+-------------------
+You can use Givrate::Components if you want to make custom ratings / vote from your controller.
+Put this in your controller:
+
+Public $components = array(
+	'Givrate.Givrate'
+);
+
+
+Manually Generate Token by TokenShell
+-------------------------------------
+You can use TokenShell for generate tokens according to your model / foreignKey.
+
+Usage:
+```bash
+./Console/cake givrate.token generate modelName plugin pluginName (id) (length)
+```
+Optional:<br>
+**id** : generate token according to foreignKey ID<br>
+**length** : length token. Default is 5
+
+
+Note:
+-----
+I still consider this plugin as very unstable
 
 Good luck and have fun
 -- kahitam --
