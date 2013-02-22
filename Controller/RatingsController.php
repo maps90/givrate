@@ -8,6 +8,10 @@ App::uses('PointUtil', 'Givrate.Utility');
  */
 class RatingsController extends GivrateAppController {
 
+	public $components = array(
+		'Givrate.Givrate'
+	);
+
 	public function beforeFilter() {
 		parent::beforeFilter();
 
@@ -149,7 +153,7 @@ class RatingsController extends GivrateAppController {
 
 			$star = range(1, $stars);
 			if (in_array($rating, array_values($star)) === true) {
-				$result = $this->Rating->rate($token, $rtype, $rating, $user_id, $owner);
+				$result = $this->Givrate->sendTo($token, $rtype, $rating, $user_id, $owner);
 				if ($result) {
 					$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
 					$rate = $RateCalculate->getPoint($token, $rtype, array('recursive' => -1));
@@ -191,15 +195,8 @@ class RatingsController extends GivrateAppController {
 				'msg' => Configure::read('Givrate.error_msg_vote')
 			);
 
-			$voteNumbers = Configure::read('Givrate.vote_approved');
-			$voteNumbers = explode(',', $voteNumbers);
-			$votes = array();
-			foreach ($voteNumbers as $voteNumber) {
-				$votes[] = $voteNumber;
-			}
-
-			if (in_array($vote, $votes) === true) {
-				$result = $this->Rating->rate($token, $rtype, $vote, $user_id, $owner);
+			if ($voteChecking = $this->Givrate->voteChecking($vote)) {
+				$result = $this->Givrate->sendTo($token, $rtype, $vote, $user_id, $owner);
 				if ($result) {
 					$response = true;
 				} else {
@@ -208,6 +205,7 @@ class RatingsController extends GivrateAppController {
 			} else {
 				$response = $responseVal;
 			}
+
 			$this->set(compact('response'));
 			$this->set('_serialize', 'response');
 		}
