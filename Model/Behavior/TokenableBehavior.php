@@ -59,6 +59,7 @@ class TokenableBehavior extends ModelBehavior {
 	}
 
 	public function __saveToken(&$Model, $token) {
+		$this->Token =& ClassRegistry::init('Givrate.Token');
 		$token = $this->Token->create(array(
 			'model' => $Model->alias,
 			'foreign_key' => $Model->id,
@@ -68,6 +69,7 @@ class TokenableBehavior extends ModelBehavior {
 	}
 
 	public function __isValidToken($token) {
+		$this->Token =& ClassRegistry::init('Givrate.Token');
 		$count = $this->Token->find('count', array(
 			'conditions' => array(
 				'Token.token' => $token,
