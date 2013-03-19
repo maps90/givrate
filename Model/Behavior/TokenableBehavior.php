@@ -81,4 +81,17 @@ class TokenableBehavior extends ModelBehavior {
 	public function __GenerateUniqid($len) {
 		return substr(uniqid(), -$len);
 	}
+
+	public function beforeFind(Model $Model, $query) {
+		$Model->bindModel(array('hasOne' => array(
+			'Token' => array(
+				'className' => 'Givrate.Token',
+				'foreignKey' => 'foreign_key',
+				'unique' => true,
+				'conditions' => array('Token.model' => $Model->alias),
+				'fields' => '',
+			)
+		)), false);
+		return $query;
+	}
 }

@@ -52,4 +52,19 @@ class GivemeBehavior extends ModelBehavior {
 			$Model->beforeRate($data);
 		}
 	}
+
+	public function beforeFind(Model $Model, $query) {
+		$Model->bindModel(array('hasMany' => array(
+			'RateCalculate' => array(
+				'className' => $this->settings[$Model->alias]['rateCalClass'],
+				'foreignKey' => $this->settings[$Model->alias]['foreignKey'],
+				'unique' => true,
+				'conditions' => array('RateCalculate.model' => $Model->alias),
+				'fields' => '',
+				'dependent' => true
+			)
+		)), false);
+		return $query;
+	}
+
 }
