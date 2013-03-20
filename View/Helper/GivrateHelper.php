@@ -5,8 +5,8 @@ class GivrateHelper extends AppHelper {
 
 	public $helpers = array('Html', 'Form', 'Js', 'Session');
 
-	protected $Rating = null;
-	protected $RateCalculate = null;
+	protected $_Rating = null;
+	protected $_RateCalculate = null;
 
 	public function beforeRender() {
 		$params = $this->_View->params;
@@ -16,8 +16,8 @@ class GivrateHelper extends AppHelper {
 		if (isset($params['admin']) && $params['admin'] === true) {
 			return;
 		}
-		$this->Rating = ClassRegistry::init('Givrate.Rating');
-		$this->RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
+		$this->_Rating = ClassRegistry::init('Givrate.Rating');
+		$this->_RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
 		$this->Point = new PointUtil;
 
 		$this->Html->css('/givrate/css/style', null, array('inline' => false));
@@ -30,7 +30,7 @@ class GivrateHelper extends AppHelper {
  * Givrate::displayPoint
  *
  * Display point Rating or Vote
- * @token: value
+ * @token: array
  * @options:
  *	- ratelink: display rating action link. Default false.
  *	- votelink: display vote action link. Default false.
@@ -38,7 +38,7 @@ class GivrateHelper extends AppHelper {
  * Array @options can be combined with the @options Givrate::star and Givrate::vote
  */
 	public function displayPoint($token, $type, $options = array()) {
-		if (empty($token) || empty($type)) {
+		if (empty($token['id']) || empty($type)) {
 			return __d('givrate', 'Empty Token or Type.');
 		}
 		$options = Set::merge(array(
@@ -46,7 +46,7 @@ class GivrateHelper extends AppHelper {
 			'votelink' => false,
 		), $options);
 
-		$result = $this->RateCalculate->getPoint($token, $type, array('recursive' => -1));
+		$result = $this->_RateCalculate->getPoint($token['token'], $type, array('recursive' => -1));
 		switch($type) {
 			case 'vote':
 				$field = 'point';
@@ -72,26 +72,27 @@ class GivrateHelper extends AppHelper {
 		unset($options['votelink']);
 
 		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
-		$point = $this->Html->div('span7', $this->Html->div('avg', $this->Html->tag('span', $point)) . $link);
+		$point = $this->Html->div('avg', $point . $link);
 		return $point;
 	}
 
 /*
  * Givrate::star
  *
- * @token: value
+ * @token: array
  * @options:
  *	- userId : owner id for user point. If empty will not creating for user point.
  *	- stars : value of the stars.
  *	- title : tooltip title for each stars.
  */
 	public function star($token, $options = array()) {
-		if (empty($token)) {
+		if (empty($token['id'])) {
 			return __d('givrate', 'Empty token!');
 		}
 
+		$id = $token['foreign_key'];
 		$recursive = array('recursive' => -1);
-		$js = 'javascript:;';
+		$js = 'javascript:void(0);';
 		$options = Set::merge(array(
 			'class' => 'rating',
 			'link' => true,
@@ -124,8 +125,8 @@ class GivrateHelper extends AppHelper {
 		for ($i = 1; $i <= $options['stars']; $i++) {
 			$link = null;
 			$options = Set::merge($options, array(
-				'class' => 'rate-link',
-				'data-token' => $token,
+				'class' => 'rate-link-'.$id,
+				'data-token' => $token['token'],
 				'data-rating' => 's'.$i,
 				'rtype' => 'rating',
 				'escape' => false,
@@ -136,15 +137,15 @@ class GivrateHelper extends AppHelper {
 			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF
-$('body').on('click', '.rate-link', Givrate.Ratings.star);
+$('body').on('click', '.rate-link-'$id, Givrate.Ratings.star);
 $(window).load(Givrate.Ratings.list);
 EOF;
 		}
 
 		$authId = $this->Session->read('Auth.User.id');
-		$checking = $this->Rating->checking($token, $authId, 'rating', $recursive);
+		$checking = $this->_Rating->checking($token['token'], $authId, 'rating', $recursive);
 		if (!empty($checking)) {
-			$result = $this->RateCalculate->getPoint($token, 'rating', $recursive);
+			$result = $this->_RateCalculate->getPoint($token['token'], 'rating', $recursive);
 			$currentStars = $this->Point->currentStars($result['RateCalculate']['avg'], $result['RateCalculate']['point'], $result['RateCalculate']['count']);
 			$maxWidth = 18 * $options['stars'];
 $script =<<<EOF
@@ -171,13 +172,14 @@ EOF;
  *	- text: Title for vote link if don`t want to use image.
  */
 	public function vote($token, $options = array()) {
-		if (empty($token)) {
+		if (empty($token['id'])) {
 			return __d('givrate', 'Empty Token!');
 		}
-		$js = 'javascript:;';
+		$id = $token['foreign_key'];
+		$js = 'javascript:void(0);';
 		$options = Set::merge(array(
-			'class' => 'voted',
-			'data-token' => $token,
+			'class' => 'voted-' . $id,
+			'data-token' => $token['token'],
 			'vote' => '1',
 			'data-type' => 'vote',
 			'title' => 'vote',
@@ -215,10 +217,13 @@ EOF;
 		unset($options['width']);
 		unset($options['alt']);
 		unset($options['text']);
+		if (isset($options[0])) {
+			unset($options[0]);
+		}
 
 		$link = $this->Html->link($value, $js, $options);
 $script =<<<EOF
-$('body').on('click', '.voted', Givrate.Ratings.vote);
+$('body').on('click', '.voted-$id', Givrate.Ratings.vote);
 EOF;
 		$this->Js->buffer($script);
 		return $this->Html->div('vote', $this->Html->tag('span', $link));
