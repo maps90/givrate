@@ -180,6 +180,7 @@ EOF;
 			'data-token' => $token,
 			'vote' => '1',
 			'data-type' => 'vote',
+			'title' => 'vote',
 			'img' => '',
 			'width' => '',
 			'height' => '',
@@ -201,17 +202,19 @@ EOF;
 				'height' => $options['height'],
 				'alt' => $options['alt']
 			));
-			unset($options['img']);
-			unset($options['height']);
-			unset($options['width']);
-			unset($options['alt']);
+
 		} else {
 			$value = 'vote';
 		}
 
-		if (isset($options['title'])) {
-			$value = $options['title'];
+		if (isset($options['text'])) {
+			$value = $options['text'];
 		}
+		unset($options['img']);
+		unset($options['height']);
+		unset($options['width']);
+		unset($options['alt']);
+		unset($options['text']);
 
 		$link = $this->Html->link($value, $js, $options);
 $script =<<<EOF
