@@ -48,7 +48,7 @@ Example
 
 * Givrate::star (for rating stars)
 
-	$this->Givrate->star($model['Token']['token'], array(
+	$this->Givrate->star($model['Token'], array(
 		'userId' => $model['Model']['user_id']
 	));
 
@@ -65,7 +65,7 @@ ratelink : display rating action link. Default false
 
 votelink : display vote action link.  Default false
 
-	$this->Givrate->displayPoint($model['Token']['token'], 'rating', array(
+	$this->Givrate->displayPoint($model['Token'], 'rating', array(
 		'userId' => $model['Model']['user_id'],
 		'ratelink' => true
 	));
@@ -74,7 +74,7 @@ votelink : display vote action link.  Default false
 
 * Givrate::vote
 
-	$this->Givrate->vote($model['Token']['token'], array(
+	$this->Givrate->vote($model['Token'], array(
 		'userId' => $model['Model']['user_id']
 	));
 
