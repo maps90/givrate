@@ -68,7 +68,7 @@ Givrate.Ratings.star = function(ev) {
 
 		if (data.result == true) {
 			$('ul.rating').css({'width': data.stars + 'px', 'background-position' : '0px 72px'});
-			$('.avg span').text(parseFloat(data.avg).toFixed(1));
+			$('.avg').text(parseFloat(data.avg).toFixed(1));
 			$('.stars .rating li a').css({'display': 'none'});
 			return false;
 		}
@@ -95,6 +95,10 @@ Givrate.Ratings.vote = function(ev) {
 	$.post(url, { vote: vote, rtype: rtype, token: token, id: userId}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
+		}
+
+		if (data.result == true) {
+			$('div.avg').text(data.point);
 		}
 	});
 }

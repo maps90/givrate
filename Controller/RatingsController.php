@@ -190,20 +190,30 @@ class RatingsController extends GivrateAppController {
 			$token = $this->request->data['token'];
 			$rtype = $this->request->data['rtype'];
 
-			$responseVal = array(
-				'result' => false,
-				'msg' => Configure::read('Givrate.error_msg_vote')
-			);
+			$point = ClassRegistry::init('Givrate.RateCalculate')->getPoint($token, 'vote', array('recursive' => -1));
+			if (empty($point)) {
+				$point = $vote;
+			} else {
+				$point = $point['RateCalculate']['point'] + $vote;
+			}
 
+			$response = array('result' => false);
 			if ($voteChecking = $this->Givrate->voteChecking($vote)) {
 				$result = $this->Givrate->sendTo($token, $rtype, $vote, $user_id, $owner);
 				if ($result) {
-					$response = true;
+					$response = array(
+						'result' => true,
+						'point' => $point,
+					);
 				} else {
-					$response = $responseVal;
+					$response = Set::merge($response, array(
+						'msg' => Configure::read('Givrate.error_msg_checking_vote')
+					));
 				}
 			} else {
-				$response = $responseVal;
+				$response = Set::merge($response, array(
+					'msg' => Configure::read('Givrate.error_msg_vote')
+				));
 			}
 
 			$this->set(compact('response'));
