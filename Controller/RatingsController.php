@@ -144,7 +144,8 @@ class RatingsController extends GivrateAppController {
 			}
 			$token = $this->request->data['token'];
 			$stars = $this->request->data['stars'];
-			$rtype = $this->request->data['rtype'];
+			$type = $this->request->data['type'];
+			$status = $this->request->data['rstatus'];
 
 			$responseVal = array(
 				'result' => false,
@@ -153,10 +154,10 @@ class RatingsController extends GivrateAppController {
 
 			$star = range(1, $stars);
 			if (in_array($rating, array_values($star)) === true) {
-				$result = $this->Givrate->sendTo($token, $rtype, $rating, $user_id, $owner);
+				$result = $this->Givrate->sendTo($token, $type, $rating, $user_id, $status, $owner);
 				if ($result) {
 					$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
-					$rate = $RateCalculate->getPoint($token, $rtype, array('recursive' => -1));
+					$rate = $RateCalculate->getPoint($token, $type, $status, array('recursive' => -1));
 					$currentStars = $this->Point->currentStars($rate['RateCalculate']['avg'], $rate['RateCalculate']['point'], $rate['RateCalculate']['count']);
 
 					$response = array(
@@ -188,7 +189,8 @@ class RatingsController extends GivrateAppController {
 				$owner = null;
 			}
 			$token = $this->request->data['token'];
-			$rtype = $this->request->data['rtype'];
+			$type = $this->request->data['type'];
+			$status = $this->request->data['rstatus'];
 
 			$point = ClassRegistry::init('Givrate.RateCalculate')->getPoint($token, 'vote', array('recursive' => -1));
 			if (empty($point)) {
@@ -199,7 +201,7 @@ class RatingsController extends GivrateAppController {
 
 			$response = array('result' => false);
 			if ($voteChecking = $this->Givrate->voteChecking($vote)) {
-				$result = $this->Givrate->sendTo($token, $rtype, $vote, $user_id, $owner);
+				$result = $this->Givrate->sendTo($token, $type, $vote, $user_id, $status, $owner);
 				if ($result) {
 					$response = array(
 						'result' => true,

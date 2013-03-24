@@ -17,9 +17,9 @@ Givrate.namespace = function() {
 
 Givrate.namespace('Givrate.Ratings');
 
-Givrate.Ratings.list = function() {
+Givrate.Ratings.list = function(ev) {
 	var len = $('ul.rating li').length;
-	var avg = $('.avg span').text();
+	var avg = $('.avg').text();
 	var rate_width = avg * 18;
 	var minWidth = 18;
 
@@ -28,7 +28,7 @@ Givrate.Ratings.list = function() {
 		$('div.stars').css('max-width', maxWidth);
 		$('li.star' + [i]).hover(
 			function() {
-				var target = $(this).children('.rate-link').data('rating').replace(/^s/, '');
+				var target = $(this).children('.rate-link-' + ev).data('rating').replace(/^s/, '');
 				if (target == 1) {
 					var rwidth = minWidth;
 				} else {
@@ -47,7 +47,8 @@ Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating');
 	var token = $(ev.currentTarget).attr('data-token');
 	var userId = $(ev.currentTarget).attr('data-id');
-	var rtype = $(ev.currentTarget).attr('rtype');
+	var type = $(ev.currentTarget).attr('type');
+	var rstatus = $(ev.currentTarget).attr('status');
 	var stars = $(ev.currentTarget).attr('stars');
 	var url = Croogo.basePath + 'rate/submit.json';
 
@@ -61,7 +62,7 @@ Givrate.Ratings.star = function(ev) {
 	}
 	var rating = rating.replace(/^s/, '');
 
-	$.post(url, { rating: rating, rtype: rtype, token: token, id: userId, stars: stars}, function(data) {
+	$.post(url, { rating: rating, type: type, rstatus: rstatus, token: token, id: userId, stars: stars}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
 		}
@@ -79,7 +80,8 @@ Givrate.Ratings.vote = function(ev) {
 	var vote = $(ev.currentTarget).attr('data-vote');
 	var userId = $(ev.currentTarget).attr('data-id');
 	var token = $(ev.currentTarget).attr('data-token');
-	var rtype = $(ev.currentTarget).attr('data-type');
+	var type = $(ev.currentTarget).attr('data-type');
+	var rstatus = $(ev.currentTarget).attr('data-status');
 	var url = Croogo.basePath + 'rate/vote.json';
 
 	if (userId != null) {
@@ -92,7 +94,7 @@ Givrate.Ratings.vote = function(ev) {
 	}
 	var vote = vote.replace(/^s/, '');
 
-	$.post(url, { vote: vote, rtype: rtype, token: token, id: userId}, function(data) {
+	$.post(url, { vote: vote, type: type, rstatus: rstatus, token: token, id: userId}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
 		}

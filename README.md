@@ -57,7 +57,7 @@ Example
 
 * Givrate::displayPoint (for displaying point of rating or vote)
 
-$type : switch `rating` or `vote`.
+$status: switch `rating` or `vote`.
 
 $options:
 

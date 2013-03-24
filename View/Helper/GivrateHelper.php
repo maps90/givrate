@@ -31,14 +31,16 @@ class GivrateHelper extends AppHelper {
  *
  * Display point Rating or Vote
  * @token: array
+ * @status: value 'rating' / 'vote'
  * @options:
  *	- ratelink: display rating action link. Default false.
  *	- votelink: display vote action link. Default false.
+ *	- type: value of your type point. Default 'default'
  *
  * Array @options can be combined with the @options Givrate::star and Givrate::vote
  */
-	public function displayPoint($token, $type, $options = array()) {
-		if (empty($token['id']) || empty($type)) {
+	public function displayPoint($token, $status, $options = array()) {
+		if (empty($token['id']) || empty($status)) {
 			return __d('givrate', 'Empty Token or Type.');
 		}
 		$options = Set::merge(array(
@@ -46,7 +48,14 @@ class GivrateHelper extends AppHelper {
 			'votelink' => false,
 		), $options);
 
-		$result = $this->_RateCalculate->getPoint($token['token'], $type, array('recursive' => -1));
+		if (isset($options['type'])) {
+			$type = $options['type'];
+		} else {
+			$type = 'default';
+		}
+		unset($options['type']);
+
+		$result = $this->_RateCalculate->getPoint($token['token'], $type, $status, array('recursive' => -1));
 		switch($type) {
 			case 'vote':
 				$field = 'point';
@@ -98,8 +107,13 @@ class GivrateHelper extends AppHelper {
 			'link' => true,
 			'value' => 0,
 			'stars' => 5,
+			'type' => 'default',
 			'userId' => '',
 		), $options);
+
+		if (!empty($options['type'])) {
+			$options = Set::merge(array('type' => $options['type']), $options);
+		}
 
 		if (!empty($options['userId'])) {
 			$options = Set::merge($options, array('data-id' => 's'.$options['userId']));
@@ -128,7 +142,7 @@ class GivrateHelper extends AppHelper {
 				'class' => 'rate-link-'.$id,
 				'data-token' => $token['token'],
 				'data-rating' => 's'.$i,
-				'rtype' => 'rating',
+				'status' => 'rating',
 				'escape' => false,
 			));
 			if ($title != array()) {
@@ -137,8 +151,8 @@ class GivrateHelper extends AppHelper {
 			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF
-$('body').on('click', '.rate-link-'$id, Givrate.Ratings.star);
-$(window).load(Givrate.Ratings.list);
+$('body').on('click', '.rate-link-$id', Givrate.Ratings.star);
+$(window).load(Givrate.Ratings.list($id));
 EOF;
 		}
 
@@ -181,7 +195,7 @@ EOF;
 			'class' => 'voted-' . $id,
 			'data-token' => $token['token'],
 			'vote' => '1',
-			'data-type' => 'vote',
+			'data-type' => 'default',
 			'title' => 'vote',
 			'img' => '',
 			'width' => '',
@@ -189,6 +203,12 @@ EOF;
 			'alt' => '',
 			'escape' => false,
 		), $options);
+
+		if (!empty($options['status'])) {
+			$options = Set::merge(array('data-status' => $options['status']), $options);
+		} else {
+			$options['data-status'] = 'default';
+		}
 
 		$options = Set::merge($options, array('data-vote' => 's'.$options['vote']));
 		unset($options['vote']);

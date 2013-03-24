@@ -74,13 +74,14 @@ class RateCalculate extends GivrateAppModel {
 		'bestRate' => true,
 		);
 
-	public function calculating($alias, $foreignKey, $value, $type) {
+	public function calculating($alias, $foreignKey, $value, $type, $status) {
 		$rated = $this->find('first', array(
 			'recursive' => -1,
 			'conditions' => array(
 				'RateCalculate.model' => $alias,
 				'RateCalculate.foreign_key' => $foreignKey,
 				'RateCalculate.type' => $type,
+				'RateCalculate.status' => $status,
 				)
 			));
 
@@ -100,6 +101,7 @@ class RateCalculate extends GivrateAppModel {
 		$data['RateCalculate']['point'] = $sum;
 		$data['RateCalculate']['avg'] = $avg;
 		$data['RateCalculate']['type'] = $type;
+		$data['RateCalculate']['status'] = $status;
 
 		if (!empty($rated)) {
 			$this->id = $rated['RateCalculate']['id'];
@@ -107,6 +109,7 @@ class RateCalculate extends GivrateAppModel {
 			$data['RateCalculate']['model'] = $alias;
 			$data['RateCalculate']['foreign_key'] = $foreignKey;
 			$data['RateCalculate']['type'] = $type;
+			$data['RateCalculate']['status'] = $status;
 			$this->create();
 		}
 
@@ -117,7 +120,7 @@ class RateCalculate extends GivrateAppModel {
 		}
 	}
 
-	public function getPoint($token, $type, $options = array()) {
+	public function getPoint($token, $type, $status, $options = array()) {
 		if (isset($options['recursive'])) {
 			$this->recursive = $options['recursive'];
 		}
@@ -126,7 +129,8 @@ class RateCalculate extends GivrateAppModel {
 			'conditions' => array(
 				'RateCalculate.model' => $token['Token']['model'],
 				'RateCalculate.foreign_key' => $token['Token']['foreign_key'],
-				'RateCalculate.type' => $type
+				'RateCalculate.type' => $type,
+				'RateCalculate.status' => $status,
 			)
 		));
 		return $result;

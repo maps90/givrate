@@ -19,8 +19,8 @@ class GivrateComponent extends Component {
  * @user_id	: Auth user_id.
  * @owner	: User_id of the content belongs to them.
  */
-	public function sendTo($token, $type, $value, $user_id, $owner) {
-		return $this->Rating->rate($token, $type, $value, $user_id, $owner);
+	public function sendTo($token, $type, $value, $user_id, $status, $owner) {
+		return $this->Rating->rate($token, $type, $value, $user_id, $status, $owner);
 	}
 
 /**
