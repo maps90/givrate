@@ -36,6 +36,7 @@ class GivrateHelper extends AppHelper {
  *	- ratelink: display rating action link. Default false.
  *	- votelink: display vote action link. Default false.
  *	- type: value of your type point. Default 'default'
+ *  - display: display of your point type. Default 'rating'.
  *
  * Array @options can be combined with the @options Givrate::star and Givrate::vote
  */
@@ -55,8 +56,13 @@ class GivrateHelper extends AppHelper {
 		}
 		unset($options['type']);
 
+		if (isset($options['display'])) {
+			$display = $options['display'];
+		}
+		unset($options['display']);
+
 		$result = $this->_RateCalculate->getPoint($token['token'], $type, $status, array('recursive' => -1));
-		switch($type) {
+		switch($display) {
 			case 'vote':
 				$field = 'point';
 				if ($options['votelink'] == true) {
@@ -195,7 +201,7 @@ EOF;
 			'class' => 'voted-' . $id,
 			'data-token' => $token['token'],
 			'vote' => '1',
-			'data-type' => 'default',
+			'data-type' => 'vote',
 			'title' => 'vote',
 			'img' => '',
 			'width' => '',
