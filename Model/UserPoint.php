@@ -59,11 +59,22 @@ class UserPoint extends GivrateAppModel {
 		}
 	}
 
-	public function getMyPoint($userId) {
+	public function getMyPoint($userId, $status = null, $type = null) {
+		$conditions = array(
+			'UserPoint.user_id' => $userId
+		);
+		if (!empty($status)) {
+			$conditions = Set::merge($conditions, array(
+				'UserPoint.status' => $status
+			));
+		}
+		if (!empty($type)) {
+			$conditions = Set::merge($conditions, array(
+				'UserPoint.type' => $type
+			));
+		}
 		$mypoint = $this->find('first', array(
-			'conditions' => array(
-				'UserPoint.user_id' => $userId
-			)
+			'conditions' => $conditions
 		));
 		return $mypoint;
 	}
