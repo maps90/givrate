@@ -192,7 +192,7 @@ class RatingsController extends GivrateAppController {
 			$type = $this->request->data['type'];
 			$status = $this->request->data['rstatus'];
 
-			$point = ClassRegistry::init('Givrate.RateCalculate')->getPoint($token, 'vote', array('recursive' => -1));
+			$point = ClassRegistry::init('Givrate.RateCalculate')->getPoint($token, 'vote', $status, array('recursive' => -1));
 			if (empty($point)) {
 				$point = $vote;
 			} else {
