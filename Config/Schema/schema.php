@@ -11,6 +11,7 @@ class GivrateSchema extends CakeSchema {
 	var $ratings = array(
 		'id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11, 'key' => 'primary'),
 		'user_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
+		'owner_id' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'model' => array('type' => 'string', 'null' => false, 'default' => NULL, 'key' => 'index'),
 		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'value' => array('type' => 'integer', 'null' => false, 'default' => '0'),
