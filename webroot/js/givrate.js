@@ -47,14 +47,13 @@ Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating');
 	var token = $(ev.currentTarget).attr('data-token');
 	var userId = $(ev.currentTarget).attr('data-id');
-	var type = $(ev.currentTarget).attr('type');
-	var rstatus = $(ev.currentTarget).attr('status');
+	var type = $(ev.currentTarget).attr('data-type');
+	var rstatus = $(ev.currentTarget).attr('data-status');
 	var stars = $(ev.currentTarget).attr('stars');
+	var upoint = $(ev.currentTarget).attr('upoint');
 	var url = Croogo.basePath + 'rate/submit.json';
 
-	if (userId != null) {
-		userId = userId.replace(/^s/, '');
-	}
+	userId = userId.replace(/^s/, '');
 
 	if (rating.substr(0, 1) != 's') {
 		alert('Rating failed!');
@@ -62,7 +61,7 @@ Givrate.Ratings.star = function(ev) {
 	}
 	var rating = rating.replace(/^s/, '');
 
-	$.post(url, { rating: rating, type: type, rstatus: rstatus, token: token, id: userId, stars: stars}, function(data) {
+	$.post(url, { rating: rating, type: type, rstatus: rstatus, token: token, id: userId, stars: stars, upoint: upoint}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
 		}
@@ -82,11 +81,10 @@ Givrate.Ratings.vote = function(ev) {
 	var token = $(ev.currentTarget).attr('data-token');
 	var type = $(ev.currentTarget).attr('data-type');
 	var rstatus = $(ev.currentTarget).attr('data-status');
+	var upoint = $(ev.currentTarget).attr('upoint');
 	var url = Croogo.basePath + 'rate/vote.json';
 
-	if (userId != null) {
-		userId = userId.replace(/^s/, '');
-	}
+	userId = userId.replace(/^s/, '');
 
 	if (vote.substr(0, 1) != 's') {
 		alert('Voting failed!');
@@ -94,7 +92,7 @@ Givrate.Ratings.vote = function(ev) {
 	}
 	var vote = vote.replace(/^s/, '');
 
-	$.post(url, { vote: vote, type: type, rstatus: rstatus, token: token, id: userId}, function(data) {
+	$.post(url, { vote: vote, type: type, rstatus: rstatus, token: token, id: userId, upoint: upoint}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
 		}
