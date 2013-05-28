@@ -67,9 +67,12 @@ Givrate.Ratings.star = function(ev) {
 		}
 
 		if (data.result == true) {
-			$('ul.rating').css({'width': data.stars + 'px', 'background-position' : '0px 72px'});
-			$('.avg').text(parseFloat(data.avg).toFixed(1));
-			$('.stars .rating li a').css({'display': 'none'});
+			var maxWidth = 18 * data.s;
+			var wStars = data.stars;
+			$('div.avg').text(parseFloat(data.avg).toFixed(1));
+			$('div.stars').css('max-width', maxWidth);
+			$('div.stars ul.rating').css({'width': wStars + 'px', 'background-position' : '0px 72px'});
+			$('div.stars ul.rating li a').css({'display': 'none'});
 			return false;
 		}
 	});
