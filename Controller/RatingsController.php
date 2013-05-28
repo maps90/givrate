@@ -160,7 +160,8 @@ class RatingsController extends GivrateAppController {
 					$response = array(
 						'result' => true,
 						'avg' => $rate['RateCalculate']['avg'],
-						'stars' => $currentStars
+						'stars' => $currentStars,
+						's' => $stars
 					);
 				} else {
 					$response = $responseVal;
