@@ -31,37 +31,27 @@ class GivrateHelper extends AppHelper {
  *
  * Display point Rating or Vote
  * @token: array
- * @status: value 'rating' / 'vote'
+ * @ownerId: value of user_id from your content
  * @options:
  *	- ratelink: display rating action link. Default false.
  *	- votelink: display vote action link. Default false.
- *	- type: value of your type point. Default 'default'
  *  - display: display of your point type. Default 'rating'.
  *
  * Array @options can be combined with the @options Givrate::star and Givrate::vote
  */
-	public function displayPoint($token, $ownerId, $type, $options = array()) {
-		if (empty($token['id']) || empty($type)) {
-			return __d('givrate', 'Empty Token or Type.');
+	public function displayPoint($token, $ownerId, $options = array()) {
+		if (empty($token['id']) || empty($ownerId)) {
+			return __d('givrate', 'Empty Token or ownerId.');
 		}
 		$options = Set::merge(array(
 			'ratelink' => false,
 			'votelink' => false,
+			'status' => 'default',
+			'display' => 'rating',
 		), $options);
-
-		if (isset($options['status']) && !empty($options['status'])) {
-			$status = $options['status'];
-		} else {
-			$status = 'default';
-		}
-		unset($options['status']);
-		unset($options['type']);
-
-		if (isset($options['display'])) {
-			$display = $options['display'];
-		}
+		$display = $options['display'];
 		unset($options['display']);
-		$result = $this->_RateCalculate->getPoint($token['token'], $type, $status, array('recursive' => -1));
+		$result = $this->_RateCalculate->getPoint($token['token'], $display, $options['status'], array('recursive' => -1));
 		switch($display) {
 			case 'vote':
 				$field = 'point';
@@ -87,7 +77,7 @@ class GivrateHelper extends AppHelper {
 		unset($options['votelink']);
 
 		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
-		$point = $this->Html->div('avg', $point . $link);
+		$point = $this->Html->div('avg', $point) . $link;
 		return $point;
 	}
 
@@ -95,10 +85,11 @@ class GivrateHelper extends AppHelper {
  * Givrate::star
  *
  * @token: array
+ * @ownerId: value of user_id from your content
  * @options:
- *	- userId : owner id for user point. If empty will not creating for user point.
  *	- stars : value of the stars.
  *	- title : tooltip title for each stars.
+ *	- status: status name of your rating. default value is "default"
  *	- upoint : Create user point record. Default "false"
  */
 	public function star($token, $ownerId, $options = array()) {
@@ -156,15 +147,15 @@ class GivrateHelper extends AppHelper {
 			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF
-$('body').on('click', '.rate-link-$id', Givrate.Ratings.star);
 $(window).load(Givrate.Ratings.list($id));
+$('body').on('click', '.rate-link-$id', Givrate.Ratings.star);
 EOF;
 		}
 
 		$authId = $this->Session->read('Auth.User.id');
-		$checking = $this->_Rating->checking($token['token'], $authId, 'rating', $ownerId, $recursive);
+		$checking = $this->_Rating->checking($token['token'], $authId, 'rating', $status, $ownerId, $recursive);
 		if (!empty($checking)) {
-			$result = $this->_RateCalculate->getPoint($token['token'], 'rating', $recursive);
+			$result = $this->_RateCalculate->getPoint($token['token'], 'rating', $status, $recursive);
 			$currentStars = $this->Point->currentStars($result['RateCalculate']['avg'], $result['RateCalculate']['point'], $result['RateCalculate']['count']);
 			$maxWidth = 18 * $options['stars'];
 $script =<<<EOF
@@ -176,7 +167,11 @@ EOF;
 
 		$stars = $this->Html->div('stars', $this->Html->tag('ul', $stars, array('class' => 'rating')));
 		$this->Js->buffer($script);
-		return $stars;
+		if (!$authId) {
+			return;
+		} else {
+			return $stars;
+		}
 	}
 
 /*
@@ -193,6 +188,8 @@ EOF;
  *	- width: width for image if "img" options is not empty.
  *	- alt: alt for image if "img" options is not empty.
  *	- text: Title for vote link if don`t want to use image.
+ *	- upoint : Create user point record. Default "false"
+ *	- status : status name of your vote. Default value is "default"
  */
 	public function vote($token, $ownerId, $options = array()) {
 		if (empty($token['id'])) {
@@ -230,7 +227,6 @@ EOF;
 				'height' => $options['height'],
 				'alt' => $options['alt']
 			));
-
 		} else {
 			$value = 'vote';
 		}
