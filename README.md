@@ -24,6 +24,13 @@ Console/cake ext activate plugin Givrate
 - Create the schema
 - Use behaviors Givrate.Tokenable & Givrate.Giveme in target Model
 
+OR
+
+You can put in bootstrap if using Croogo
+example:
+Croogo::hookBehavior('Model', 'Givrate.Tokenable');
+Croogo::hookBehavior('Model', 'Givrate.Giveme');
+
 
 Givrate Settings
 ----------------
@@ -38,9 +45,9 @@ Quickstar Guide
 use Givrate::helpers:
 
 	$options = array(
-		'userId' => $model['Model']['user_id']
+		'upoint' => true
 	);
-If using userId options. Givrate will be processing point for users
+If using upoint options and value is true. Givrate will be processing point for users
 
 
 Example
@@ -48,8 +55,8 @@ Example
 
 * Givrate::star (for rating stars)
 
-	$this->Givrate->star($model['Token'], array(
-		'userId' => $model['Model']['user_id']
+	$this->Givrate->star($model['Token'], $ownerId, array(
+		'upoint' => true
 	));
 
 
@@ -57,16 +64,16 @@ Example
 
 * Givrate::displayPoint (for displaying point of rating or vote)
 
-$status: switch `rating` or `vote`.
+$display: switch `rating` or `vote`. Default value is `rating`
 
 $options:
 
 ratelink : display rating action link. Default false
-
 votelink : display vote action link.  Default false
+status : You can change you status rating/vote. Default value is 'default'
 
-	$this->Givrate->displayPoint($model['Token'], 'rating', array(
-		'userId' => $model['Model']['user_id'],
+	$this->Givrate->displayPoint($model['Token'], $ownerId, array(
+		'upoint' => true,
 		'ratelink' => true
 	));
 
@@ -75,7 +82,7 @@ votelink : display vote action link.  Default false
 * Givrate::vote
 
 	$this->Givrate->vote($model['Token'], array(
-		'userId' => $model['Model']['user_id']
+		'upoint' => true
 	));
 
 
