@@ -102,7 +102,7 @@ You can use TokenShell for generate tokens according to your model / foreignKey.
 
 Usage:
 ```bash
-./Console/cake givrate.token generate modelName plugin pluginName (id) (length)
+./Console/cake givrate.token generate modelName pluginName (id) (length)
 ```
 Optional:<br>
 **id** : generate token according to foreignKey ID<br>
