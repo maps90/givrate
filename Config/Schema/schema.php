@@ -16,7 +16,7 @@ class GivrateSchema extends CakeSchema {
 		'foreign_key' => array('type' => 'integer', 'null' => false, 'default' => NULL, 'length' => 11),
 		'value' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
-		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
+		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
@@ -32,7 +32,7 @@ class GivrateSchema extends CakeSchema {
 		'point' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'avg' => array('type' => 'float', 'null' => true, 'default' => '0', 'length' => '8,4'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
-		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
+		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
@@ -60,7 +60,7 @@ class GivrateSchema extends CakeSchema {
 		'points' => array('type' => 'integer', 'null' => false, 'default' => NULL),
 		'avg' => array('type' => 'float', 'null' => true, 'default' => '0', 'length' => '8,4'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
-		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 50),
+		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
 		'point_date' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
 			'PRIMARY' => array('column' => 'id', 'unique' => 1),
