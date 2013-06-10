@@ -25,6 +25,17 @@ class Rating extends GivrateAppModel {
 			),
 		),
 
+		'owner_id' => array(
+			'notempty' => array(
+				'rule' => array('notempty'),
+				//'message' => 'Your custom message here',
+				//'allowEmpty' => false,
+				//'required' => false,
+				//'last' => false, // Stop validation after this rule
+				//'on' => 'create', // Limit validation to 'create' or 'update' operations
+			),
+		),
+
 		'model' => array(
 			'notempty' => array(
 				'rule' => array('notempty'),
@@ -76,7 +87,7 @@ class Rating extends GivrateAppModel {
 		)
 	);
 
-	public function checking($token, $userId, $type, $status, $options = array()) {
+	public function checking($token, $userId, $type, $status, $ownerId, $options = array()) {
 		if (isset($options['recursive'])) {
 			$this->recursive = $options['recursive'];
 		}
@@ -87,6 +98,7 @@ class Rating extends GivrateAppModel {
 				'Rating.model' => $tokenData['Token']['model'],
 				'Rating.foreign_key' => $tokenData['Token']['foreign_key'],
 				'Rating.user_id' => $userId,
+				'Rating.owner_id' => $ownerId,
 				'Rating.type' => $type,
 				'Rating.status' => $status,
 				)
@@ -106,8 +118,8 @@ class Rating extends GivrateAppModel {
 		}
 	}
 
-	public function rate($token, $type, $rating, $userId, $status, $ownerId = null) {
-		$rated = $this->checking($token, $userId, $type, $status, array('recursive' => -1));
+	public function rate($token, $type, $rating, $userId, $status, $ownerId, $userPoint = null) {
+		$rated = $this->checking($token, $userId, $type, $status, $ownerId, array('recursive' => -1));
 		if ($rated) {
 			return false;
 		}
@@ -115,14 +127,15 @@ class Rating extends GivrateAppModel {
 		$tokenData = $Token->findByToken($token);
 		$data = array(
 			'user_id' => $userId,
+			'owner_id' => $ownerId,
 			'model' => $tokenData['Token']['model'],
 			'foreign_key' => $tokenData['Token']['foreign_key'],
 			'value' => $rating,
 			'type' => $type,
 			'status' => $status,
-			);
+		);
 		if ($this->save($data)) {
-			if ($ownerId != null) {
+			if ($userPoint != null) {
 				$UserPoint = ClassRegistry::init('Givrate.UserPoint');
 				$UserPoint->countMyPoint($ownerId, $rating, $type, $status);
 			}

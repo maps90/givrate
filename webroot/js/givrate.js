@@ -47,14 +47,13 @@ Givrate.Ratings.star = function(ev) {
 	var rating = $(ev.currentTarget).attr('data-rating');
 	var token = $(ev.currentTarget).attr('data-token');
 	var userId = $(ev.currentTarget).attr('data-id');
-	var type = $(ev.currentTarget).attr('type');
-	var rstatus = $(ev.currentTarget).attr('status');
+	var type = $(ev.currentTarget).attr('data-type');
+	var rstatus = $(ev.currentTarget).attr('data-status');
 	var stars = $(ev.currentTarget).attr('stars');
+	var upoint = $(ev.currentTarget).attr('upoint');
 	var url = Croogo.basePath + 'rate/submit.json';
 
-	if (userId != null) {
-		userId = userId.replace(/^s/, '');
-	}
+	userId = userId.replace(/^s/, '');
 
 	if (rating.substr(0, 1) != 's') {
 		alert('Rating failed!');
@@ -62,15 +61,18 @@ Givrate.Ratings.star = function(ev) {
 	}
 	var rating = rating.replace(/^s/, '');
 
-	$.post(url, { rating: rating, type: type, rstatus: rstatus, token: token, id: userId, stars: stars}, function(data) {
+	$.post(url, { rating: rating, type: type, rstatus: rstatus, token: token, id: userId, stars: stars, upoint: upoint}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
 		}
 
 		if (data.result == true) {
-			$('ul.rating').css({'width': data.stars + 'px', 'background-position' : '0px 72px'});
-			$('.avg').text(parseFloat(data.avg).toFixed(1));
-			$('.stars .rating li a').css({'display': 'none'});
+			var maxWidth = 18 * data.s;
+			var wStars = data.stars;
+			$('div.avg').text(parseFloat(data.avg).toFixed(1));
+			$('div.stars').css('max-width', maxWidth);
+			$('div.stars ul.rating').css({'width': wStars + 'px', 'background-position' : '0px 72px'});
+			$('div.stars ul.rating li a').css({'display': 'none'});
 			return false;
 		}
 	});
@@ -82,11 +84,10 @@ Givrate.Ratings.vote = function(ev) {
 	var token = $(ev.currentTarget).attr('data-token');
 	var type = $(ev.currentTarget).attr('data-type');
 	var rstatus = $(ev.currentTarget).attr('data-status');
+	var upoint = $(ev.currentTarget).attr('upoint');
 	var url = Croogo.basePath + 'rate/vote.json';
 
-	if (userId != null) {
-		userId = userId.replace(/^s/, '');
-	}
+	userId = userId.replace(/^s/, '');
 
 	if (vote.substr(0, 1) != 's') {
 		alert('Voting failed!');
@@ -94,7 +95,7 @@ Givrate.Ratings.vote = function(ev) {
 	}
 	var vote = vote.replace(/^s/, '');
 
-	$.post(url, { vote: vote, type: type, rstatus: rstatus, token: token, id: userId}, function(data) {
+	$.post(url, { vote: vote, type: type, rstatus: rstatus, token: token, id: userId, upoint: upoint}, function(data) {
 		if (data.result == false) {
 			alert(data.msg);
 		}

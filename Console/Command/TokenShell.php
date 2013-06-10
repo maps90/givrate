@@ -50,13 +50,9 @@ class TokenShell extends AppShell {
 							'help' => __('Model Name'),
 							'required' => true,
 						),
-						'plugin' => array(
-							'help' => __('Plugin Extension'),
+						'pluginName' => array(
+							'help' => __('Plugin Name'),
 							'required' => true,
-						),
-						'extension' => array(
-							'help' => __('Name of plugin'),
-							'required' => true
 						),
 						'id' => array(
 							'help' => __('Model Id'),
@@ -78,25 +74,20 @@ class TokenShell extends AppShell {
  * <id> : generate a token according to id (optional)
  * <length> : length tokens. Default length is 5 (optional)
  *
- * Usage: ./Console/cake givrate.token generate modelName plugin pluginName <id> <length>
+ * Usage: ./Console/cake givrate.token generate modelName pluginName <id> <length>
  */
 	public function generate() {
 		$args = $this->args;
 		$this->args = array_map('strtolower', $this->args);
 		$modelAlias = ucfirst($args[0]);
-		$type = $this->args[1];
-		$ext = $args[2];
-		$modelId = isset($args[3]) ? $args[3] : null;
-		$len = isset($args[4]) ? $args[4] : null;
+		$pluginName = ucfirst($this->args[1]);
+		$modelId = isset($args[2]) ? $args[2] : null;
+		$len = isset($args[3]) ? $args[3] : null;
 		$extensions = $this->_CroogoPlugin->getPlugins();
-		$active = CakePlugin::loaded($ext);
+		$active = CakePlugin::loaded($pluginName);
 
-		if (!empty($ext) && !in_array($ext, $extensions) && !$active) {
-			$this->err(__('%s "%s" not found.', ucfirst($type), $ext));
-			return false;
-		}
-		if (empty($ext)) {
-			$this->err(__('%s name must be provided.', ucfirst($type)));
+		if (!empty($pluginName) && !in_array($pluginName, $extensions) && !$active) {
+			$this->err(__('plugin "%s" not found.', $pluginName));
 			return false;
 		}
 		if (empty($len)) {
@@ -112,7 +103,7 @@ class TokenShell extends AppShell {
 			));
 		}
 
-		$Model = ClassRegistry::init($ext.'.'.$modelAlias);
+		$Model = ClassRegistry::init($pluginName.'.'.$modelAlias);
 		$Model->recursive = -1;
 		$results = $Model->find('all', $options);
 		foreach ($results as $result) {

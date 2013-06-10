@@ -31,42 +31,32 @@ class GivrateHelper extends AppHelper {
  *
  * Display point Rating or Vote
  * @token: array
- * @status: value 'rating' / 'vote'
+ * @ownerId: value of user_id from your content
  * @options:
  *	- ratelink: display rating action link. Default false.
  *	- votelink: display vote action link. Default false.
- *	- type: value of your type point. Default 'default'
  *  - display: display of your point type. Default 'rating'.
  *
  * Array @options can be combined with the @options Givrate::star and Givrate::vote
  */
-	public function displayPoint($token, $status, $options = array()) {
-		if (empty($token['id']) || empty($status)) {
-			return __d('givrate', 'Empty Token or Type.');
+	public function displayPoint($token, $ownerId, $options = array()) {
+		if (empty($token['id']) || empty($ownerId)) {
+			return __d('givrate', 'Empty Token or ownerId.');
 		}
 		$options = Set::merge(array(
 			'ratelink' => false,
 			'votelink' => false,
+			'status' => 'default',
+			'display' => 'rating',
 		), $options);
-
-		if (isset($options['type'])) {
-			$type = $options['type'];
-		} else {
-			$type = 'default';
-		}
-		unset($options['type']);
-
-		if (isset($options['display'])) {
-			$display = $options['display'];
-		}
+		$display = $options['display'];
 		unset($options['display']);
-
-		$result = $this->_RateCalculate->getPoint($token['token'], $type, $status, array('recursive' => -1));
+		$result = $this->_RateCalculate->getPoint($token['token'], $display, $options['status'], array('recursive' => -1));
 		switch($display) {
 			case 'vote':
 				$field = 'point';
 				if ($options['votelink'] == true) {
-					$link = $this->vote($token, $options);
+					$link = $this->vote($token, $ownerId, $options);
 				} else {
 					$link = '';
 				}
@@ -76,7 +66,7 @@ class GivrateHelper extends AppHelper {
 			default:
 				$field = 'avg';
 				if ($options['ratelink'] == true) {
-					$link = $this->star($token, $options);
+					$link = $this->star($token, $ownerId, $options);
 				} else {
 					$link = '';
 				}
@@ -87,7 +77,7 @@ class GivrateHelper extends AppHelper {
 		unset($options['votelink']);
 
 		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
-		$point = $this->Html->div('avg', $point . $link);
+		$point = $this->Html->div('avg', $point) . $link;
 		return $point;
 	}
 
@@ -95,12 +85,14 @@ class GivrateHelper extends AppHelper {
  * Givrate::star
  *
  * @token: array
+ * @ownerId: value of user_id from your content
  * @options:
- *	- userId : owner id for user point. If empty will not creating for user point.
  *	- stars : value of the stars.
  *	- title : tooltip title for each stars.
+ *	- status: status name of your rating. default value is "default"
+ *	- upoint : Create user point record. Default "false"
  */
-	public function star($token, $options = array()) {
+	public function star($token, $ownerId, $options = array()) {
 		if (empty($token['id'])) {
 			return __d('givrate', 'Empty token!');
 		}
@@ -113,18 +105,16 @@ class GivrateHelper extends AppHelper {
 			'link' => true,
 			'value' => 0,
 			'stars' => 5,
-			'type' => 'default',
-			'userId' => '',
+			'upoint' => '',
 		), $options);
 
-		if (!empty($options['type'])) {
-			$options = Set::merge(array('type' => $options['type']), $options);
+		if (isset($options['status']) && !empty($options['status'])) {
+			$status = $options['status'];
+		} else {
+			$status = 'default';
 		}
-
-		if (!empty($options['userId'])) {
-			$options = Set::merge($options, array('data-id' => 's'.$options['userId']));
-			unset($options['userId']);
-		}
+		$options = Set::merge(array('data-status' => $status), $options);
+		$options = Set::merge($options, array('data-id' => 's'.$ownerId));
 
 		if (isset($options['title'])) {
 			if ($options['title'] != false) {
@@ -148,7 +138,7 @@ class GivrateHelper extends AppHelper {
 				'class' => 'rate-link-'.$id,
 				'data-token' => $token['token'],
 				'data-rating' => 's'.$i,
-				'status' => 'rating',
+				'data-type' => 'rating',
 				'escape' => false,
 			));
 			if ($title != array()) {
@@ -157,15 +147,15 @@ class GivrateHelper extends AppHelper {
 			$link = $this->Html->link('&nbsp;', $js, $options);
 			$stars .= $this->Html->tag('li', $link, array('class' => 'star' . $i));
 $script =<<<EOF
-$('body').on('click', '.rate-link-$id', Givrate.Ratings.star);
 $(window).load(Givrate.Ratings.list($id));
+$('body').on('click', '.rate-link-$id', Givrate.Ratings.star);
 EOF;
 		}
 
 		$authId = $this->Session->read('Auth.User.id');
-		$checking = $this->_Rating->checking($token['token'], $authId, 'rating', $recursive);
+		$checking = $this->_Rating->checking($token['token'], $authId, 'rating', $status, $ownerId, $recursive);
 		if (!empty($checking)) {
-			$result = $this->_RateCalculate->getPoint($token['token'], 'rating', $recursive);
+			$result = $this->_RateCalculate->getPoint($token['token'], 'rating', $status, $recursive);
 			$currentStars = $this->Point->currentStars($result['RateCalculate']['avg'], $result['RateCalculate']['point'], $result['RateCalculate']['count']);
 			$maxWidth = 18 * $options['stars'];
 $script =<<<EOF
@@ -177,21 +167,31 @@ EOF;
 
 		$stars = $this->Html->div('stars', $this->Html->tag('ul', $stars, array('class' => 'rating')));
 		$this->Js->buffer($script);
-		return $stars;
+		if (!$authId) {
+			return;
+		} else {
+			return $stars;
+		}
 	}
 
 /*
  * Givrate::vote
  *
  * @token: value
+ * @ownerId: value
+ *
+ * OwnerId = value user_id of their content
+ *
  * @options:
  *	- img: custom image. Default null
  *	- height: height for image if "img" options is not empty.
  *	- width: width for image if "img" options is not empty.
  *	- alt: alt for image if "img" options is not empty.
  *	- text: Title for vote link if don`t want to use image.
+ *	- upoint : Create user point record. Default "false"
+ *	- status : status name of your vote. Default value is "default"
  */
-	public function vote($token, $options = array()) {
+	public function vote($token, $ownerId, $options = array()) {
 		if (empty($token['id'])) {
 			return __d('givrate', 'Empty Token!');
 		}
@@ -200,6 +200,7 @@ EOF;
 		$options = Set::merge(array(
 			'class' => 'voted-' . $id,
 			'data-token' => $token['token'],
+			'upoint' => '',
 			'vote' => '1',
 			'data-type' => 'vote',
 			'title' => 'vote',
@@ -219,18 +220,13 @@ EOF;
 		$options = Set::merge($options, array('data-vote' => 's'.$options['vote']));
 		unset($options['vote']);
 
-		if (isset($options['userId'])) {
-			$options = Set::merge($options, array('data-id' => 's'.$options['userId']));
-			unset($options['userId']);
-		}
-
+		$options = Set::merge($options, array('data-id' => 's'.$ownerId));
 		if (!empty($options['img'])) {
 			$value = $this->Html->image($options['img'], array(
 				'width' => $options['width'],
 				'height' => $options['height'],
 				'alt' => $options['alt']
 			));
-
 		} else {
 			$value = 'vote';
 		}
