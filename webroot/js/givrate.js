@@ -102,6 +102,8 @@ Givrate.Ratings.vote = function(ev) {
 
 		if (data.result == true) {
 			$('div.avg').text(data.point);
+			$('div.vote').css({'display': 'none'});
+			return false;
 		}
 	});
 }
