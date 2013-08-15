@@ -92,21 +92,25 @@ class Rating extends GivrateAppModel {
 	);
 
 	public function checking($token, $userId, $type, $status, $ownerId, $options = array()) {
-		if (isset($options['recursive'])) {
-			$this->recursive = $options['recursive'];
-		}
 		$Token = ClassRegistry::init('Givrate.Token');
 		$tokenData = $Token->findByToken($token);
-		$result = $this->find('first', array(
-			'conditions' => array(
-				'Rating.model' => $tokenData['Token']['model'],
-				'Rating.foreign_key' => $tokenData['Token']['foreign_key'],
-				'Rating.user_id' => $userId,
-				'Rating.owner_id' => $ownerId,
-				'Rating.type' => $type,
-				'Rating.status' => $status,
-				)
+		$conditions = array(
+			'Rating.model' => $tokenData['Token']['model'],
+			'Rating.foreign_key' => $tokenData['Token']['foreign_key'],
+			'Rating.user_id' => $userId,
+			'Rating.owner_id' => $ownerId,
+			'Rating.type' => $type,
+			'Rating.status' => $status,
+		);
+		if (isset($options['params'])) {
+			$conditions = Set::merge($conditions, array(
+				'Rating.params' => $options['params']
 			));
+		}
+		$result = $this->find('first', array(
+			'recursive' => -1,
+			'conditions' => $conditions
+		));
 		return $result;
 	}
 
@@ -122,8 +126,8 @@ class Rating extends GivrateAppModel {
 		}
 	}
 
-	public function rate($token, $type, $rating, $userId, $status, $ownerId, $userPoint = null) {
-		$rated = $this->checking($token, $userId, $type, $status, $ownerId, array('recursive' => -1));
+	public function rate($token, $type, $rating, $userId, $status, $ownerId, $userPoint = null, $options = array()) {
+		$rated = $this->checking($token, $userId, $type, $status, $ownerId, $options);
 		if ($rated) {
 			return false;
 		}
