@@ -7,6 +7,10 @@ App::uses('GivrateAppModel', 'Givrate.Model');
  */
 class Rating extends GivrateAppModel {
 
+	public $actsAs = array(
+		'Params'
+	);
+
 /**
  * Validation rules
  *

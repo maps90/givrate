@@ -17,6 +17,7 @@ class GivrateSchema extends CakeSchema {
 		'value' => array('type' => 'integer', 'null' => false, 'default' => '0'),
 		'type' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 20),
 		'status' => array('type' => 'string', 'null' => false, 'default' => NULL, 'length' => 100),
+		'params' => array('type' => 'text', 'null' => true, 'default' => NULL),
 		'created' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'modified' => array('type' => 'datetime', 'null' => true, 'default' => NULL),
 		'indexes' => array(
