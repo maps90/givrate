@@ -128,7 +128,7 @@ class Rating extends GivrateAppModel {
 
 	public function rate($token, $type, $rating, $userId, $status, $ownerId, $userPoint = null, $options = array()) {
 		$rated = $this->checking($token, $userId, $type, $status, $ownerId, $options);
-		if ($rated) {
+		if (!empty($rated)) {
 			return false;
 		}
 		$Token = ClassRegistry::init('Givrate.Token');
@@ -142,8 +142,11 @@ class Rating extends GivrateAppModel {
 			'type' => $type,
 			'status' => $status,
 		);
+		if (isset($options['params'])) {
+			$data = Set::merge($data, array('params' => $options['params']));
+		}
 		if ($this->save($data)) {
-			if ($userPoint != null) {
+			if ($userPoint == true) {
 				$UserPoint = ClassRegistry::init('Givrate.UserPoint');
 				$UserPoint->countMyPoint($ownerId, $rating, $type, $status);
 			}
