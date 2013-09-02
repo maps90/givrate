@@ -7,14 +7,30 @@ App::uses('GivrateAppController', 'Givrate.Controller');
  */
 class UserVotesController extends GivrateAppController {
 
+	public $components = array(
+		'Search.Prg' => array(
+			'presetForm' => array(
+				'paramType' => 'querystring',
+			),
+			'commonProcess' => array(
+				'paramType' => 'querystring',
+				'filterEmpty' => true,
+			),
+		)
+	);
+
 /**
  * admin_index method
  *
  * @return void
  */
 	public function admin_index() {
+		$this->Prg->commonProcess();
+		$searchFields = array('user' => array('type' => 'text'), 'date');
 		$this->UserVote->recursive = 0;
-		$this->set('userVotes', $this->paginate());
+		$this->paginate['conditions'] = $this->UserVote->parseCriteria($this->request->query);
+		$userVotes = $this->paginate();
+		$this->set(compact('userVotes', 'searchFields'));
 	}
 
 /**
@@ -47,7 +63,6 @@ class UserVotesController extends GivrateAppController {
 				$this->Session->setFlash(__d('croogo', 'The user vote could not be saved. Please, try again.'), 'default', array('class' => 'error'));
 			}
 		}
-		$users = $this->UserVote->User->find('list');
 		$this->set(compact('users'));
 	}
 
@@ -73,8 +88,6 @@ class UserVotesController extends GivrateAppController {
 			$options = array('conditions' => array('UserVote.' . $this->UserVote->primaryKey => $id));
 			$this->request->data = $this->UserVote->find('first', $options);
 		}
-		$users = $this->UserVote->User->find('list');
-		$this->set(compact('users'));
 	}
 
 /**

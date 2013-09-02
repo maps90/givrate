@@ -7,6 +7,10 @@ App::uses('GivrateAppModel', 'Givrate.Model');
  */
 class UserVote extends GivrateAppModel {
 
+	public $actsAs = array(
+		'Search.Searchable'
+	);
+
 
 	//The Associations below have been created with all possible keys, those that are not needed can be removed
 
@@ -24,6 +28,34 @@ class UserVote extends GivrateAppModel {
 			'order' => ''
 		)
 	);
+
+	public $filterArgs = array(
+		array('name' => 'user', 'type' => 'query', 'method' => 'filterUsers'),
+		array('name' => 'date', 'type' => 'query', 'method' => 'filterDates'),
+	);
+
+	public function filterDates($data = array()) {
+		if (empty($data['date'])) {
+			return array();
+		}
+		$date = date('Y-m-d', strtotime($data['date']));
+		return array(
+			'UserVote.vote_date' => $date
+		);
+	}
+
+	public function filterUsers($data = array()) {
+		if (empty($data['user'])) {
+			return array();
+		}
+		$user = '%' . $data['user'] . '%';
+		return array(
+			'OR' => array(
+				array('User.name LIKE' => $user),
+				array('User.username LIKE' => $user)
+			)
+		);
+	}
 
 	public function counting($userId, $tokenId) {
 		$date = date('Y-m-d');

@@ -28,7 +28,7 @@ $this->Html
 				$rows[] = array(
 					$userPoint['UserPoint']['id'],
 					$this->Html->link($userPoint['User']['name'],
-						array('controller' => 'users', 'action' => 'view', $userPoint['UserPoint']['user_id'])
+						array('plugin' => 'users', 'controller' => 'users', 'action' => 'view', $userPoint['UserPoint']['user_id'])
 					),
 					$userPoint['UserPoint']['raters'],
 					$userPoint['UserPoint']['points'],
