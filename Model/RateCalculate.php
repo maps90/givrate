@@ -122,6 +122,10 @@ class RateCalculate extends GivrateAppModel {
 		}
 	}
 
+/**
+ * getPoint Method
+ * Get point from token
+ */
 	public function getPoint($token, $type, $status, $options = array()) {
 		if (isset($options['recursive'])) {
 			$this->recursive = $options['recursive'];
@@ -157,5 +161,42 @@ class RateCalculate extends GivrateAppModel {
 		} else {
 			return $results;
 		}
+	}
+
+/**
+ * countPoint Method
+ * Count point
+ *
+ * @type default value 'vote'
+ */
+	public function countPoint($model, $userId, $type, $status = null) {
+		if (empty($type)) {
+			return false;
+		}
+		if ($type == 'vote') {
+			$field = 'point';
+		} else {
+			$field = 'avg';
+		}
+		if ($status != null) {
+			$sql = sprintf("
+				SELECT sum(%s) as Total
+				FROM rate_calculates
+				WHERE model = '%s'
+				AND user_id = %d
+				AND type = '%s'
+				AND status = '%s'
+				", $field, $model, $userId, $type, $status);
+		} else {
+			$sql = sprintf("
+				SELECT sum(%s) as Total
+				FROM rate_calculates
+				WHERE model = '%s'
+				AND user_id = %d
+				", $field, $model, $userId, $type);
+		}
+
+		$total = $this->query($sql);
+		return $total[0][0];
 	}
 }
