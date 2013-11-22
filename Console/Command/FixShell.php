@@ -8,7 +8,10 @@ App::uses('AppShell', 'Console/Command');
 
 class FixShell extends AppShell {
 
-	public $uses = array('Rating','RateCalculate');
+	public $uses = array(
+		'Rating',
+		'Givrate.RateCalculate'
+	);
 
 	public function getOptionParser() {
 		return parent::getOptionParser()
