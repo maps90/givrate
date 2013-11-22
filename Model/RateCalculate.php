@@ -74,10 +74,11 @@ class RateCalculate extends GivrateAppModel {
 		'bestRate' => true,
 		);
 
-	public function calculating($alias, $foreignKey, $value, $type, $status) {
+	public function calculating($userId, $alias, $foreignKey, $value, $type, $status) {
 		$rated = $this->find('first', array(
 			'recursive' => -1,
 			'conditions' => array(
+				'RateCalculate.user_id' => $userId,
 				'RateCalculate.model' => $alias,
 				'RateCalculate.foreign_key' => $foreignKey,
 				'RateCalculate.type' => $type,
@@ -106,6 +107,7 @@ class RateCalculate extends GivrateAppModel {
 		if (!empty($rated)) {
 			$this->id = $rated['RateCalculate']['id'];
 		} else {
+			$data['RateCalculate']['user_id'] = $userId;
 			$data['RateCalculate']['model'] = $alias;
 			$data['RateCalculate']['foreign_key'] = $foreignKey;
 			$data['RateCalculate']['type'] = $type;

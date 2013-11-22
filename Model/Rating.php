@@ -117,12 +117,13 @@ class Rating extends GivrateAppModel {
 	protected function _calculateRating($data) {
 		$RateCalculate = ClassRegistry::init('Givrate.RateCalculate');
 		if (!empty($data)) {
+			$ownerId = $data['Rating']['owner_id'];
 			$alias = $data['Rating']['model'];
 			$foreignKey = $data['Rating']['foreign_key'];
 			$value = $data['Rating']['value'];
 			$type = $data['Rating']['type'];
 			$status = $data['Rating']['status'];
-			$RateCalculate->calculating($alias, $foreignKey, $value, $type, $status);
+			$RateCalculate->calculating($ownerId, $alias, $foreignKey, $value, $type, $status);
 		}
 	}
 
