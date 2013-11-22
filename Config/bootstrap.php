@@ -17,6 +17,15 @@ CroogoNav::add('extensions.children.givrate', array(
 				'action' => 'index'
 			)
 		),
+		'user_votes' => array(
+			'title' => __d('givrate', 'User Vote History'),
+			'url' => array(
+				'plugin' => 'givrate',
+				'admin' => true,
+				'controller' => 'user_votes',
+				'action' => 'index'
+			)
+		),
 		'rate_calculates' => array(
 			'title' => __d('givrate', 'Rating Calculate'),
 			'url' => array(

@@ -127,12 +127,20 @@ class Rating extends GivrateAppModel {
 	}
 
 	public function rate($token, $type, $rating, $userId, $status, $ownerId, $userPoint = null, $options = array()) {
-		$rated = $this->checking($token, $userId, $type, $status, $ownerId, $options);
-		if (!empty($rated)) {
-			return false;
+		if (($type == 'rating') || Configure::read('Givrate.only_once_for_all')) {
+			$rated = $this->checking($token, $userId, $type, $status, $ownerId, $options);
+			if (!empty($rated)) {
+				return false;
+			}
 		}
 		$Token = ClassRegistry::init('Givrate.Token');
 		$tokenData = $Token->findByToken($token);
+		if ($type == 'vote') {
+			$userVote = ClassRegistry::init('Givrate.UserVote')->counting($userId, $tokenData['Token']['id']);
+			if ($userVote != true) {
+				return false;
+			}
+		}
 		$data = array(
 			'user_id' => $userId,
 			'owner_id' => $ownerId,

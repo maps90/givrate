@@ -21,6 +21,8 @@ class GivrateActivation {
 
 
 		$controller->Setting->write('Givrate.vote_approved', '1', array('editable' => 1, 'title' => 'Vote Number Approved (Separated with comma)'));
+		$controller->Setting->write('Givrate.only_once_for_all', '1', array('editable' => 1, 'title' => 'Only once for all?'));
+		$controller->Setting->write('Givrate.max_vote', '1', array('editable' => 1, 'title' => 'Max Vote in one day'));
 		$controller->Setting->write('Givrate.error_msg_vote', 'Voting failed!. Please try again.', array('editable' => 1, 'title' => 'Error Message for vote'));
 		$controller->Setting->write('Givrate.error_msg_checking_vote', 'Failed voting or you already voted this content.', array('editable' => 1, 'title' => 'Error Message for vote more than once'));
 		$controller->Setting->write('Givrate.error_msg_rating', 'Rating failed!. Please try again.', array('editable' => 1, 'title' => 'Error Message for rating'));
