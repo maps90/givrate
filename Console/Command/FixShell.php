@@ -10,7 +10,7 @@ class FixShell extends AppShell {
 
 	public $uses = array(
 		'Rating',
-		'Givrate.RateCalculate'
+		'RateCalculate'
 	);
 
 	public function getOptionParser() {
@@ -50,6 +50,7 @@ class FixShell extends AppShell {
 				$this->RateCalculate->id = $rateCal['RateCalculate']['id'];
 				$this->RateCalculate->saveField('user_id', $rating['Rating']['owner_id']);
 				$this->out(sprintf('Recover Rate Calculate id: %d', $rateCal['RateCalculate']['id']));
+				$db->commit();
 				$processed++;
 			} else {
 				$this->out(sprintf('Empty owner_id on Rating.id: %d', $rating['Rating']['id']));
