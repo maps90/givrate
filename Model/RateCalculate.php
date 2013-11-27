@@ -169,34 +169,44 @@ class RateCalculate extends GivrateAppModel {
  *
  * @type default value 'vote'
  */
-	public function countPoint($model, $userId, $type, $status = null) {
-		if (empty($type)) {
+	public function countPoint($model, $userId = null, $options = array()) {
+		if (empty($model)) {
 			return false;
 		}
-		if ($type == 'vote') {
+		$_options = array(
+			'type' => 'vote',
+			'status' => '',
+			'order' => '',
+			'limit' => ''
+		);
+		$options = array_merge($_options, $options);
+		if ($options['type'] == 'vote') {
 			$field = 'point';
 		} else {
 			$field = 'avg';
 		}
-		if ($status != null) {
-			$sql = sprintf("
-				SELECT sum(%s) as Total
-				FROM rate_calculates
-				WHERE model = '%s'
-				AND user_id = %d
-				AND type = '%s'
-				AND status = '%s'
-				", $field, $model, $userId, $type, $status);
-		} else {
-			$sql = sprintf("
-				SELECT sum(%s) as Total
-				FROM rate_calculates
-				WHERE model = '%s'
-				AND user_id = %d
-				", $field, $model, $userId, $type);
+		$conditions = array(
+			'RateCalculate.model' => $model,
+			'RateCalculate.type' => $options['type'],
+		);
+		if ($userId != null) {
+			$conditions = Hash::merge(array(
+				'RateCalculate.user_id' => $userId
+			), $conditions);
 		}
-
-		$total = $this->query($sql);
-		return $total[0][0];
+		if ($options['status'] != '') {
+			$conditions = Hash::merge(array(
+				'RateCalculate.status' => $options['status']
+			), $conditions);
+		}
+		$result = $this->find('all', array(
+			'recursive' => -1,
+			'fields' => array("SUM($field) as total", 'RateCalculate.*'),
+			'conditions' => $conditions,
+			'group' => 'RateCalculate.user_id',
+			'order' => $options['order'],
+			'limit' => $options['limit'],
+		));
+		return $result;
 	}
 }
