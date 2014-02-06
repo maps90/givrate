@@ -77,7 +77,8 @@ class GivrateHelper extends AppHelper {
 		unset($options['votelink']);
 
 		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
-		$point = $this->Html->div('avg left', $point) . $link;
+		$istar = $this->Html->tag('i', '', array('class' => 'flaticon-outline'));
+		$point = $this->Html->div('avg text-left', $istar . $this->Html->tag('span',$point, array('class' => 'point'))) . $link;
 		return $point;
 	}
 
