@@ -58,6 +58,9 @@ class UserVote extends GivrateAppModel {
 	}
 
 	public function counting($userId, $tokenId) {
+		if ($userId == 1) {
+			return true;
+		}
 		$date = date('Y-m-d');
 		$voting = $this->find('first', array(
 			'conditions' => array(
@@ -92,7 +95,15 @@ class UserVote extends GivrateAppModel {
 		return true;
 	}
 
+/**
+ * check method
+ *
+ * exclude role admin
+ */
 	public function check($userId, $tokenId) {
+		if ($userId == 1) {
+			return true;
+		}
 		$date = date('Y-m-d');
 		$voting = $this->find('first', array(
 			'conditions' => array(

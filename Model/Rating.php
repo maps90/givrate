@@ -137,8 +137,13 @@ class Rating extends GivrateAppModel {
 		$Token = ClassRegistry::init('Givrate.Token');
 		$tokenData = $Token->findByToken($token);
 		if ($type == 'vote') {
-			$userVote = ClassRegistry::init('Givrate.UserVote')->counting($userId, $tokenData['Token']['id']);
-			if ($userVote != true) {
+			$UserVote = ClassRegistry::init('Givrate.UserVote');
+			$voteCount = $UserVote->counting($userId, $tokenData['Token']['id']);
+			if ($voteCount != true) {
+				return false;
+			}
+			$userVoteCheck = $UserVote->check($userId, $tokenData['Token']['id']);
+			if ($userVoteCheck != true) {
 				return false;
 			}
 		}
@@ -154,6 +159,7 @@ class Rating extends GivrateAppModel {
 		if (isset($options['params'])) {
 			$data = Set::merge($data, array('params' => $options['params']));
 		}
+		$this->create();
 		if ($this->save($data)) {
 			if ($userPoint == true) {
 				$UserPoint = ClassRegistry::init('Givrate.UserPoint');
