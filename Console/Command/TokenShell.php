@@ -80,7 +80,7 @@ class TokenShell extends AppShell {
 		$args = $this->args;
 		$this->args = array_map('strtolower', $this->args);
 		$modelAlias = ucfirst($args[0]);
-		$pluginName = ucfirst($this->args[1]);
+		$pluginName = $args[1];
 		$modelId = isset($args[2]) ? $args[2] : null;
 		$len = isset($args[3]) ? $args[3] : null;
 		$extensions = $this->_CroogoPlugin->getPlugins();

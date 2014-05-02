@@ -48,6 +48,7 @@ class GivrateHelper extends AppHelper {
 			'votelink' => false,
 			'status' => 'default',
 			'display' => 'rating',
+			'type' => 'star'
 		), $options);
 		$display = $options['display'];
 		unset($options['display']);
@@ -79,6 +80,25 @@ class GivrateHelper extends AppHelper {
 		$point = empty($result['RateCalculate'][$field]) ? 0 : $point;
 		$istar = $this->Html->tag('i', '', array('class' => 'flaticon-outline'));
 		$point = $this->Html->div('avg text-left', $istar . $this->Html->tag('span',$point, array('class' => 'point'))) . $link;
+		if ($options['type'] == 'star') {
+			$rating = empty($result['RateCalculate'][$field]) ? 0 : $rating;
+			$fullStar = floor($rating);
+			$halfStar = round($rating*2) % 2;
+			for ($i = 0; $i<$fullStar; $i++) {
+				$this->Html->div('ratings', $this->Html->tag('i', '', array('class' => 'icon-star3')));
+			}
+			if ($halfStar) {
+				$this->Html->div('ratings', $this->Html->tag('i', '', array('class' => 'icon-star2')));
+			}
+			if (empty($rating)) {
+				$star = 5;
+				$stars = '';
+				for ($i = 0; $i < $star; $i++) {
+					$stars .= $this->Html->tag('i', '', array('class' => 'icon-star'));
+				}
+				return $this->Html->tag('span', $stars, array('class' => 'ratings'));
+			}
+		}
 		return $point;
 	}
 
